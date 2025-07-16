@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../routes/app_routes.dart';
+import 'service_vendor_page.dart'; // <- Make sure this path is correct
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,13 +18,13 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final List<Map<String, String>> services = [
-    {"title": "Wedding Hall", "image": "assets/images/hall.jpg"},
-    {"title": "Decorator", "image": "assets/images/decor.jpg"},
-    {"title": "Catering", "image": "assets/images/catering.jpg"},
-    {"title": "Pandit", "image": "assets/images/pandit.jpg"},
-    {"title": "DJ & Sound System", "image": "assets/images/Dj.jpg"},
-    {"title": "Salon", "image": "assets/images/saloon.jpg"},
-    {"title": "Transportation", "image": "assets/images/trasport.jpg"},
+    {"name": "Wedding Hall", "image": "assets/images/hall.jpg"},
+    {"name": "Decorator", "image": "assets/images/decor.jpg"},
+    {"name": "Catering", "image": "assets/images/catering.jpg"},
+    {"name": "Pandit", "image": "assets/images/pandit.jpg"},
+    {"name": "DJ & Sound System", "image": "assets/images/dj.jpg"},
+    {"name": "Saloon", "image": "assets/images/saloon.jpg"},
+    {"name": "Transportation", "image": "assets/images/trasport.jpg"},
   ];
 
   int _currentSlide = 0;
@@ -56,36 +56,6 @@ class _HomePageState extends State<HomePage> {
     _pageController.dispose();
     _timer?.cancel();
     super.dispose();
-  }
-
-  void _navigateToService(BuildContext context, String title) {
-    String route = '';
-    switch (title) {
-      case 'Wedding Hall':
-        route = AppRoutes.weddingHall;
-        break;
-      case 'Decorator':
-        route = AppRoutes.decorator;
-        break;
-      case 'Catering':
-        route = AppRoutes.catering;
-        break;
-      // case 'Pandit':
-      //   route = AppRoutes.pandit;
-      //   break;
-      // case 'DJ & Sound System':
-      //   route = AppRoutes.dj;
-      //   break;
-      // case 'Salon':
-      //   route = AppRoutes.salon;
-      //   break;
-      // case 'Transportation':
-      //   route = AppRoutes.transport;
-      //   break;
-    }
-    if (route.isNotEmpty) {
-      Navigator.pushNamed(context, route);
-    }
   }
 
   @override
@@ -161,7 +131,8 @@ class _HomePageState extends State<HomePage> {
               width: _currentSlide == index ? 16 : 8,
               height: 8,
               decoration: BoxDecoration(
-                color: _currentSlide == index ? Colors.black87 : Colors.grey[400],
+                color:
+                    _currentSlide == index ? Colors.black87 : Colors.grey[400],
                 borderRadius: BorderRadius.circular(4),
               ),
             );
@@ -201,12 +172,14 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Our Services",
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            )),
+        Text(
+          "Our Services",
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
         const SizedBox(height: 16),
         SizedBox(
           height: 230,
@@ -217,7 +190,18 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               final service = services[index];
               return GestureDetector(
-                onTap: () => _navigateToService(context, service['title']!),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => ServiceVendorPage(
+                            serviceName: service['name']!,
+                            headerImage: service['image']!,
+                          ),
+                    ),
+                  );
+                },
                 child: Container(
                   width: 180,
                   decoration: BoxDecoration(
@@ -233,7 +217,10 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           gradient: LinearGradient(
-                            colors: [Colors.black.withOpacity(0.5), Colors.transparent],
+                            colors: [
+                              Colors.black.withOpacity(0.5),
+                              Colors.transparent,
+                            ],
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                           ),
@@ -242,9 +229,13 @@ class _HomePageState extends State<HomePage> {
                       Positioned(
                         bottom: 10,
                         left: 10,
-                        child: Text(service['title']!,
-                            style: GoogleFonts.playfairDisplay(
-                                fontSize: 18, color: Colors.white)),
+                        child: Text(
+                          service['name']!,
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -252,7 +243,7 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-        )
+        ),
       ],
     );
   }
