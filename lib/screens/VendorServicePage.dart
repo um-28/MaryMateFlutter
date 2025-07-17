@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/service_model.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../data/cart_data.dart';
+// import '../screens/add_cart_page.dart';
 
 class VendorServicePage extends StatefulWidget {
   final int vendorId;
@@ -139,7 +141,10 @@ class _VendorServicePageState extends State<VendorServicePage> {
                           : endDate == null
                           ? "Start Date: ${startDate!.toLocal().toString().split(' ')[0]}"
                           : "From: ${startDate!.toLocal().toString().split(' ')[0]} to ${endDate!.toLocal().toString().split(' ')[0]}",
-                      style: const TextStyle(fontSize: 16, color: Colors.teal),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color.fromARGB(255, 26, 25, 25),
+                      ),
                     ),
 
                   const SizedBox(height: 20),
@@ -150,12 +155,30 @@ class _VendorServicePageState extends State<VendorServicePage> {
                                     startDate != null &&
                                     endDate != null)
                             ? () {
+                              // setState(() {
+                              //   services[index].startDate = startDate;
+                              //   services[index].endDate = endDate ?? startDate;
+                              //   services[index].isAddedToCart = true;
+                              // });
                               setState(() {
                                 services[index].startDate = startDate;
                                 services[index].endDate = endDate ?? startDate;
                                 services[index].isAddedToCart = true;
+                                if (!globalCartItems.contains(
+                                  services[index],
+                                )) {
+                                  globalCartItems.add(services[index]);
+                                }
                               });
+
                               Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '${services[index].serviceType} added to cart!',
+                                  ),
+                                ),
+                              );
                             }
                             : null,
                     style: ElevatedButton.styleFrom(

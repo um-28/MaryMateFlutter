@@ -1,23 +1,20 @@
 class VendorService {
-  // final int vendorId;
-  final String serviceType;
-  final String description;
-  final double price;
-  final List<String> images;
+  String serviceType;
+  String description;
+  double price;
+  List<String> images;
+  bool isAddedToCart;
   DateTime? startDate;
   DateTime? endDate;
-  bool isAddedToCart;
 
   VendorService({
-    // required this.vendorId,
     required this.serviceType,
     required this.description,
     required this.price,
     required this.images,
+    this.isAddedToCart = false,
     this.startDate,
     this.endDate,
-    this.isAddedToCart = false,
-
   });
 
   factory VendorService.fromJson(Map<String, dynamic> json) {
@@ -27,6 +24,12 @@ class VendorService {
       description: json['description'],
       price: json['price'].toDouble(),
       images: List<String>.from(json['images'] ?? []),
+      startDate:
+          json['start_date'] != null
+              ? DateTime.parse(json['start_date'])
+              : null,
+      endDate:
+          json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
     );
   }
 }
