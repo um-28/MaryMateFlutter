@@ -4,6 +4,9 @@ class VendorService {
   final String description;
   final double price;
   final List<String> images;
+  DateTime? startDate;
+  DateTime? endDate;
+  bool isAddedToCart;
 
   VendorService({
     // required this.vendorId,
@@ -11,6 +14,10 @@ class VendorService {
     required this.description,
     required this.price,
     required this.images,
+    this.startDate,
+    this.endDate,
+    this.isAddedToCart = false,
+
   });
 
   factory VendorService.fromJson(Map<String, dynamic> json) {

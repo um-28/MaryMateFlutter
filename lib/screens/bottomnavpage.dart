@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'homepage.dart';
 import 'bookingpage.dart';
 import 'profilepage.dart';
-import 'servicepage.dart';
+import 'addcartpage.dart';
 
 class BottomNavPage extends StatefulWidget {
   const BottomNavPage({super.key});
@@ -14,21 +14,27 @@ class BottomNavPage extends StatefulWidget {
 class _BottomNavPageState extends State<BottomNavPage> {
   int _currentIndex = 0;
 
-  final pages = const [HomePage(), ServicePage(), BookingPage(), ProfilePage()];
+  final pages = const [
+    HomePage(),
+    BookingPage(),
+    AddCartPage(cartItems: const []),
+    ProfilePage(),
+  ];
 
   final List<IconData> _icons = [
     Icons.home_rounded,
-     Icons.layers_rounded,   
+
     Icons.calendar_month_rounded,
+    Icons.shopping_cart_rounded, // Cart Icon
     Icons.account_circle_rounded,
   ];
 
-  final List<String> _labels = ["Home", "Services", "Booking", "Profile"];
+  final List<String> _labels = ["Home", "Booking", "Cart", "Profile"];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true, // Allows nav bar to float over body
+      extendBody: true,
       body: IndexedStack(index: _currentIndex, children: pages),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.all(16),
