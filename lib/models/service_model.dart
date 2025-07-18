@@ -6,6 +6,7 @@ class VendorService {
   bool isAddedToCart;
   DateTime? startDate;
   DateTime? endDate;
+  
 
   VendorService({
     required this.serviceType,

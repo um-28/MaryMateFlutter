@@ -24,7 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> registerUser() async {
     setState(() => _isLoading = true);
 
-    final url = Uri.parse("http://192.168.1.7:8000/api/register");
+    final url = Uri.parse("http://192.168.1.2:8000/api/register");
 
     try {
       final response = await http.post(
@@ -56,7 +56,6 @@ class _RegisterPageState extends State<RegisterPage> {
           Navigator.pushReplacementNamed(context, AppRoutes.login);
         });
       } else {
-        
         if (responseData.containsKey('errors')) {
           final errors = responseData['errors'] as Map<String, dynamic>;
           String combinedErrors = errors.values

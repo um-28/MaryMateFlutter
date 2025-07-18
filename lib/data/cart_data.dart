@@ -3,3 +3,4 @@
 import '../models/service_model.dart';
 
 List<VendorService> globalCartItems = [];
+

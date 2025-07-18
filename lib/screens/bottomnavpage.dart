@@ -1,10 +1,8 @@
 // import 'package:flutter/material.dart';
-// // import 'package:marry_mate28/screens/VendorServicePage.dart';
 // import 'homepage.dart';
 // import 'bookingpage.dart';
 // import 'profilepage.dart';
 // import 'add_cart_page.dart';
-// import '../models/service_model.dart';
 
 // class BottomNavPage extends StatefulWidget {
 //   const BottomNavPage({super.key});
@@ -15,7 +13,6 @@
 
 // class _BottomNavPageState extends State<BottomNavPage> {
 //   int _currentIndex = 0;
-//   List<VendorService> cartItems = [];
 
 //   final List<IconData> _icons = [
 //     Icons.home_rounded,
@@ -31,7 +28,7 @@
 //     final pages = [
 //       const HomePage(),
 //       const BookingPage(),
-//       // AddCartPage(cartItems: cartItems),
+//       const AddCartPage(), // Placeholder for CartPage
 //       const ProfilePage(),
 //     ];
 
@@ -58,7 +55,19 @@
 //             final isSelected = _currentIndex == index;
 
 //             return GestureDetector(
-//               onTap: () => setState(() => _currentIndex = index),
+//               onTap: () {
+
+//                 if (index == 2) {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (context) => const AddCartPage(),
+//                     ),
+//                   );
+//                 } else {
+//                   setState(() => _currentIndex = index);
+//                 }
+//               },
 //               child: AnimatedContainer(
 //                 duration: const Duration(milliseconds: 300),
 //                 padding: const EdgeInsets.symmetric(
@@ -124,10 +133,11 @@ class _BottomNavPageState extends State<BottomNavPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
+    // AddCartPage gets a UniqueKey to rebuild when tab is selected
+    final List<Widget> pages = [
       const HomePage(),
       const BookingPage(),
-      const Placeholder(), // Placeholder for CartPage
+      AddCartPage(key: UniqueKey()), // forces rebuild on tab switch
       const ProfilePage(),
     ];
 
@@ -140,11 +150,11 @@ class _BottomNavPageState extends State<BottomNavPage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(22),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black12,
               blurRadius: 18,
-              offset: const Offset(0, 6),
+              offset: Offset(0, 6),
             ),
           ],
         ),
@@ -155,16 +165,7 @@ class _BottomNavPageState extends State<BottomNavPage> {
 
             return GestureDetector(
               onTap: () {
-                if (index == 2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AddCartPage(),
-                    ),
-                  );
-                } else {
-                  setState(() => _currentIndex = index);
-                }
+                setState(() => _currentIndex = index); 
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),

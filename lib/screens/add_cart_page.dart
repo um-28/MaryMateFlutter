@@ -1,59 +1,5 @@
-// import 'package:flutter/material.dart';
-// import '../models/service_model.dart';
-
-// class AddCartPage extends StatelessWidget {
-//   final List<VendorService> cartItems;
-
-//   const AddCartPage({super.key, required this.cartItems});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("Your Cart")),
-//       body:
-//           cartItems.isEmpty
-//               ? const Center(child: Text("Your cart is empty."))
-//               : ListView.builder(
-//                 itemCount: cartItems.length,
-//                 itemBuilder: (context, index) {
-//                   final item = cartItems[index];
-//                   String start =
-//                       item.startDate != null
-//                           ? item.startDate!.toLocal().toString().split(' ')[0]
-//                           : "N/A";
-//                   String end =
-//                       item.endDate != null
-//                           ? item.endDate!.toLocal().toString().split(' ')[0]
-//                           : "N/A";
-
-//                   return Card(
-//                     margin: const EdgeInsets.all(8),
-//                     child: ListTile(
-//                       leading: Image.network(
-//                         item.images.first,
-//                         width: 60,
-//                         fit: BoxFit.cover,
-//                       ),
-//                       title: Text(item.serviceType),
-//                       subtitle: Column(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: [
-//                           Text("₹${item.price.toStringAsFixed(2)}"),
-//                           const SizedBox(height: 4),
-//                           Text("From: $start"),
-//                           Text("To: $end"),
-//                         ],
-//                       ),
-//                     ),
-//                   );
-//                 },
-//               ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import '../data/cart_data.dart';
-// import '../models/service_model.dart';
 
 class AddCartPage extends StatefulWidget {
   const AddCartPage({super.key});
@@ -63,49 +9,286 @@ class AddCartPage extends StatefulWidget {
 }
 
 class _AddCartPageState extends State<AddCartPage> {
+  double getTotalPrice() {
+    double total = 0.0;
+    for (var service in globalCartItems) {
+      if (service.startDate != null && service.endDate != null) {
+        int days = service.endDate!.difference(service.startDate!).inDays + 1;
+        if (days < 1) days = 1;
+        total += service.price * days;
+      } else {
+        total += service.price;
+      }
+    }
+    return total;
+  }
+
+  int calculateDays(DateTime? start, DateTime? end) {
+    if (start == null || end == null) return 1;
+    int days = end.difference(start).inDays + 1;
+    return days < 1 ? 1 : days;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Your Cart")),
+      appBar: AppBar(
+        title: const Text("Your Cart"),
+        backgroundColor: Colors.deepOrangeAccent,
+        foregroundColor: Colors.white,
+      ),
       body:
           globalCartItems.isEmpty
-              ? const Center(child: Text("Your cart is empty."))
-              : ListView.builder(
-                itemCount: globalCartItems.length,
-                itemBuilder: (context, index) {
-                  final service = globalCartItems[index];
-                  return Card(
-                    margin: const EdgeInsets.all(10),
-                    child: ListTile(
-                      title: Text(service.serviceType),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Price: ₹${service.price}"),
-                          Text(
-                            "From: ${service.startDate?.toLocal().toString().split(' ')[0]}",
-                          ),
-                          Text(
-                            "To: ${service.endDate?.toLocal().toString().split(' ')[0]}",
-                          ),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          setState(() {
-                            globalCartItems.removeAt(index);
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Item removed from cart"),
+              ? const Center(
+                child: Text(
+                  "Your cart is empty!",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+              )
+              : SafeArea(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 160),
+                        itemCount: globalCartItems.length,
+                        itemBuilder: (context, index) {
+                          final service = globalCartItems[index];
+                          final int days = calculateDays(
+                            service.startDate,
+                            service.endDate,
+                          );
+                          final double totalItemPrice = service.price * days;
+
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              border: Border.all(
+                                color: Colors.deepOrangeAccent.shade100,
+                                width: 1.2,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(16),
+                                    topRight: Radius.circular(16),
+                                  ),
+                                  child:
+                                      service.images.isNotEmpty
+                                          ? Image.network(
+                                            service.images.first,
+                                            height: 180,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                          )
+                                          : Container(
+                                            height: 180,
+                                            color: Colors.grey[300],
+                                            alignment: Alignment.center,
+                                            child: const Icon(
+                                              Icons.image,
+                                              size: 60,
+                                            ),
+                                          ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        service.serviceType,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.deepOrangeAccent,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.calendar_today,
+                                            size: 16,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            "From: ${service.startDate?.toLocal().toString().split(' ')[0]}",
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.calendar_month,
+                                            size: 16,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            "To: ${service.endDate?.toLocal().toString().split(' ')[0]}",
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "Per Day Price: ₹${service.price.toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Total (${service.price.toStringAsFixed(0)} × $days days): ₹${totalItemPrice.toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            setState(() {
+                                              globalCartItems.removeAt(index);
+                                            });
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  "Item removed from cart",
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.deepOrangeAccent,
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 10,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          icon: const Icon(Icons.delete),
+                                          label: const Text("Remove"),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           );
                         },
                       ),
                     ),
-                  );
-                },
+
+                    // ✅ Bottom total and confirm button
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 8,
+                              offset: Offset(0, -2),
+                            ),
+                          ],
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Total:",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  "₹${getTotalPrice().toStringAsFixed(2)}",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            ElevatedButton(
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "🎉 Booking Confirmed Successfully!",
+                                    ),
+                                  ),
+                                );
+                                // You can clear cart or navigate here
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepOrangeAccent,
+                                minimumSize: const Size.fromHeight(50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                "Confirm Booking",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
     );
   }

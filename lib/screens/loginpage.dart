@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // final url = Uri.parse("http://10.0.2.2:8000/api/login"); // Android emulator ke liye use 10.0.2.2
     //  final url = Uri.parse("http://localhost:8000/api/login"); // for web
-    final url = Uri.parse("http://192.168.1.7:8000/api/login");
+    final url = Uri.parse("http://192.168.1.2:8000/api/login");
 
     try {
       final response = await http.post(
@@ -35,6 +36,11 @@ class _LoginPageState extends State<LoginPage> {
       final resData = json.decode(response.body);
 
       if (response.statusCode == 200 && resData['status'] == true) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('user_id', resData['user']['id']);
+        await prefs.setString('user_name', resData['user']['name']);
+        await prefs.setString('user_email', resData['user']['email']);
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Login successful!"),

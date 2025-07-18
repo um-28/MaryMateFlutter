@@ -11,6 +11,7 @@ import '../screens/bottomnavpage.dart';
 import '../screens/registerpage.dart';
 import '../screens/loginpage.dart';
 // import '../screens/vendor_service_page.dart';
+import '../screens/add_cart_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -25,6 +26,7 @@ class AppRoutes {
   static const String serviceDetail = '/service-detail';
   static const String booking = '/booking';
   static const String sercies = '/vendor-services';
+  static const String addcart = '/addcart';
 
   static final routes = <String, WidgetBuilder>{
     splash: (context) => const SplashScreen(),
@@ -39,6 +41,6 @@ class AppRoutes {
     bottomNav: (context) => const BottomNavPage(),
     register: (context) => const RegisterPage(),
     login: (context) => const LoginPage(),
-
+    addcart: (context) => const AddCartPage(),
   };
 }

@@ -28,6 +28,7 @@ dependencies:
   http: ^1.1.1
   cupertino_icons: ^1.0.8
   font_awesome_flutter: ^10.5.0
+  shared_preferences: ^2.2.2
   
 
 dev_dependencies:

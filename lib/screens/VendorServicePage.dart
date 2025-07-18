@@ -22,7 +22,7 @@ class _VendorServicePageState extends State<VendorServicePage> {
   Future<void> fetchVendorServices() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.7:8000/api/services/${widget.vendorId}'),
+        Uri.parse('http://192.168.1.2:8000/api/services/${widget.vendorId}'),
         headers: {'Accept': 'application/json'},
       );
 
