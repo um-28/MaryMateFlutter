@@ -9,6 +9,14 @@ class AddCartPage extends StatefulWidget {
 }
 
 class _AddCartPageState extends State<AddCartPage> {
+  @override
+  void initState() {
+    super.initState();
+    loadCartFromPrefs().then((_) {
+      setState(() {}); // rebuild UI after loading cart
+    });
+  }
+
   double getTotalPrice() {
     double total = 0.0;
     for (var service in globalCartItems) {
@@ -171,10 +179,25 @@ class _AddCartPageState extends State<AddCartPage> {
                                       Align(
                                         alignment: Alignment.centerRight,
                                         child: ElevatedButton.icon(
+                                          // onPressed: () {
+                                          //   setState(() {
+                                          //     globalCartItems.removeAt(index);
+                                          //   });
+                                          //   ScaffoldMessenger.of(
+                                          //     context,
+                                          //   ).showSnackBar(
+                                          //     const SnackBar(
+                                          //       content: Text(
+                                          //         "Item removed from cart",
+                                          //       ),
+                                          //     ),
+                                          //   );
+                                          // },
                                           onPressed: () {
                                             setState(() {
                                               globalCartItems.removeAt(index);
                                             });
+                                            saveCartToPrefs(); // 🔁 Save after removal
                                             ScaffoldMessenger.of(
                                               context,
                                             ).showSnackBar(
@@ -185,6 +208,7 @@ class _AddCartPageState extends State<AddCartPage> {
                                               ),
                                             );
                                           },
+
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 Colors.deepOrangeAccent,
@@ -257,6 +281,16 @@ class _AddCartPageState extends State<AddCartPage> {
                             ),
                             const SizedBox(height: 14),
                             ElevatedButton(
+                              // onPressed: () {
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //     const SnackBar(
+                              //       content: Text(
+                              //         "🎉 Booking Confirmed Successfully!",
+                              //       ),
+                              //     ),
+                              //   );
+                              //   // You can clear cart or navigate here
+                              // },
                               onPressed: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -265,8 +299,12 @@ class _AddCartPageState extends State<AddCartPage> {
                                     ),
                                   ),
                                 );
-                                // You can clear cart or navigate here
+                                setState(() {
+                                  globalCartItems.clear();
+                                });
+                                clearCartFromPrefs(); // 🧹 Clear storage
                               },
+
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.deepOrangeAccent,
                                 minimumSize: const Size.fromHeight(50),

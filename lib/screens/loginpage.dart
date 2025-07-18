@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200 && resData['status'] == true) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setInt('user_id', resData['user']['id']);
+        await prefs.setInt('user_id', resData['user']['user_id']);
         await prefs.setString('user_name', resData['user']['name']);
         await prefs.setString('user_email', resData['user']['email']);
 

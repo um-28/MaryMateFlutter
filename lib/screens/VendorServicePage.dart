@@ -171,6 +171,8 @@ class _VendorServicePageState extends State<VendorServicePage> {
                                 }
                               });
 
+                              saveCartToPrefs();
+
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

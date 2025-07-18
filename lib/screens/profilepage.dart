@@ -1,13 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class ProfilePage extends StatelessWidget {
-//   const ProfilePage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(child: Text('Profile Page', style: TextStyle(fontSize: 24)));
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../routes/app_routes.dart';
@@ -23,6 +13,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String? name;
   String? email;
   int? userId;
+  bool isLoading = true; // Flag to manage loading state
 
   @override
   void initState() {
@@ -36,13 +27,13 @@ class _ProfilePageState extends State<ProfilePage> {
       userId = prefs.getInt('user_id');
       name = prefs.getString('user_name');
       email = prefs.getString('user_email');
+      isLoading = false; // Loading complete
     });
   }
 
   Future<void> logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-
     Navigator.pushReplacementNamed(context, AppRoutes.login);
   }
 
@@ -56,28 +47,25 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child:
-            userId == null
+            isLoading
                 ? const Center(child: CircularProgressIndicator())
+                : userId == null
+                ? const Center(
+                  child: Text(
+                    "User not logged in",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                )
                 : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      "User ID: $userId",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 10),
-                    Text("Name: $name", style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 10),
-                    Text("Email: $email", style: const TextStyle(fontSize: 18)),
-                    const Spacer(),
                     Center(
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 14,
+                            horizontal: 24,
+                            vertical: 12,
                           ),
                         ),
                         icon: const Icon(Icons.logout),
@@ -86,6 +74,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 30),
+                    Text(
+                      "User ID: $userId",
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 10),
+                    Text("Name: $name", style: const TextStyle(fontSize: 18)),
+                    const SizedBox(height: 10),
+                    Text("Email: $email", style: const TextStyle(fontSize: 18)),
                   ],
                 ),
       ),
