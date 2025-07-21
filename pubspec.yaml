@@ -29,6 +29,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   font_awesome_flutter: ^10.5.0
   shared_preferences: ^2.2.2
+  another_flushbar: ^1.10.30
   
 
 dev_dependencies:
