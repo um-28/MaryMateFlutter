@@ -13,7 +13,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String? name;
   String? email;
   int? userId;
-  bool isLoading = true; // Flag to manage loading state
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
       userId = prefs.getInt('user_id');
       name = prefs.getString('user_name');
       email = prefs.getString('user_email');
-      isLoading = false; // Loading complete
+      isLoading = false;
     });
   }
 
@@ -40,51 +40,99 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("My Profile"),
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child:
-            isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : userId == null
-                ? const Center(
-                  child: Text(
-                    "User not logged in",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      backgroundColor: Colors.white,
+      body:
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : userId == null
+              ? const Center(
+                child: Text(
+                  "User not logged in",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              )
+              : SafeArea(
+                child: Column(
                   children: [
-                    Center(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
+                    // --- TOP SECTION ---
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 30,
+                      ),
+                      color: Colors.white,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundColor: Colors.deepPurple.shade100,
+                            child: Text(
+                              name != null && name!.isNotEmpty
+                                  ? name![0].toUpperCase()
+                                  : '?',
+                              style: const TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
                           ),
-                        ),
-                        icon: const Icon(Icons.logout),
-                        label: const Text("Logout"),
-                        onPressed: logoutUser,
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  email ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    Text(
-                      "User ID: $userId",
-                      style: const TextStyle(fontSize: 18),
+
+                    const Divider(thickness: 1),
+
+                    const Spacer(),
+
+                    // --- ONLY LOGOUT BUTTON ---
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      child: ElevatedButton.icon(
+                        onPressed: logoutUser,
+                        icon: const Icon(Icons.logout),
+                        label: const Text("Logout"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size.fromHeight(48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Text("Name: $name", style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 10),
-                    Text("Email: $email", style: const TextStyle(fontSize: 18)),
+                    const SizedBox(height: 20),
                   ],
                 ),
-      ),
+              ),
     );
   }
 }

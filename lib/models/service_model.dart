@@ -34,50 +34,110 @@
 //   }
 // }
 
+// class VendorService {
+//   String serviceType;
+//   String description;
+//   double price;
+//   List<String> images;
+//   bool isAddedToCart;
+//   DateTime? startDate;
+//   DateTime? endDate;
+
+//   VendorService({
+//     required this.serviceType,
+//     required this.description,
+//     required this.price,
+//     required this.images,
+//     this.isAddedToCart = false,
+//     this.startDate,
+//     this.endDate,
+//   });
+
+//   factory VendorService.fromJson(Map<String, dynamic> json) {
+//     return VendorService(
+//       serviceType: json['service_type'],
+//       description: json['description'],
+//       price: json['price'].toDouble(),
+//       images: List<String>.from(json['images'] ?? []),
+//       isAddedToCart: json['isAddedToCart'] ?? false,
+//       startDate:
+//           json['start_date'] != null
+//               ? DateTime.parse(json['start_date'])
+//               : null,
+//       endDate:
+//           json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
+//     );
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'service_type': serviceType,
+//       'description': description,
+//       'price': price,
+//       'images': images,
+//       'isAddedToCart': isAddedToCart,
+//       'start_date': startDate?.toIso8601String(),
+//       'end_date': endDate?.toIso8601String(),
+//     };
+//   }
+// }
 class VendorService {
-  String serviceType;
-  String description;
-  double price;
-  List<String> images;
-  bool isAddedToCart;
-  DateTime? startDate;
+  final int id;
+  final String serviceType;
+  final String description;
+  final double price;
+  final List<String> images;
+  final bool isPackage; // ✅ required for UI
+  final bool isService; // ✅ optional depending on your app logic
+
+  DateTime? startDate; // ✅ for cart date logic
   DateTime? endDate;
+  bool isAddedToCart;
 
   VendorService({
+    required this.id,
     required this.serviceType,
     required this.description,
     required this.price,
     required this.images,
-    this.isAddedToCart = false,
+    this.isPackage = false,
+    this.isService = true,
     this.startDate,
     this.endDate,
+    this.isAddedToCart = false,
   });
 
-  factory VendorService.fromJson(Map<String, dynamic> json) {
+  factory VendorService.fromJson(Map<String, dynamic> json, {required bool isPackage}) {
     return VendorService(
-      serviceType: json['service_type'],
-      description: json['description'],
-      price: json['price'].toDouble(),
+      id: json['id'] ?? 0,
+      serviceType: json['serviceType'] ?? '',
+      description: json['description'] ?? '',
+      price: (json['price'] ?? 0).toDouble(),
       images: List<String>.from(json['images'] ?? []),
-      isAddedToCart: json['isAddedToCart'] ?? false,
+      isPackage: json['isPackage'] ?? false,
+      isService: json['isService'] ?? true,
       startDate:
-          json['start_date'] != null
-              ? DateTime.parse(json['start_date'])
+          json['startDate'] != null
+              ? DateTime.tryParse(json['startDate'])
               : null,
       endDate:
-          json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
+          json['endDate'] != null ? DateTime.tryParse(json['endDate']) : null,
+      isAddedToCart: json['isAddedToCart'] ?? false,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'service_type': serviceType,
+      'id': id,
+      'serviceType': serviceType,
       'description': description,
       'price': price,
       'images': images,
+      'isPackage': isPackage,
+      'isService': isService,
+      'startDate': startDate?.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
       'isAddedToCart': isAddedToCart,
-      'start_date': startDate?.toIso8601String(),
-      'end_date': endDate?.toIso8601String(),
     };
   }
 }

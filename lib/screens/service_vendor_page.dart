@@ -31,7 +31,7 @@ class _ServiceVendorPageState extends State<ServiceVendorPage> {
     try {
       final response = await http
           .get(
-            Uri.parse('http://192.168.1.2:8000/api/vendors/type/$businessType'),
+            Uri.parse('http://192.168.1.6:8000/api/vendors/type/$businessType'),
             headers: {'Accept': 'application/json'},
           )
           .timeout(const Duration(seconds: 10));

@@ -23,7 +23,10 @@ Future<void> loadCartFromPrefs() async {
   if (cartJsonList != null) {
     globalCartItems =
         cartJsonList
-            .map((item) => VendorService.fromJson(jsonDecode(item)))
+            .map(
+              (item) =>
+                  VendorService.fromJson(jsonDecode(item), isPackage: false),
+            )
             .toList();
   }
 }

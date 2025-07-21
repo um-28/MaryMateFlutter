@@ -13,7 +13,7 @@ class _AddCartPageState extends State<AddCartPage> {
   void initState() {
     super.initState();
     loadCartFromPrefs().then((_) {
-      setState(() {}); // rebuild UI after loading cart
+      setState(() {});
     });
   }
 
