@@ -146,6 +146,7 @@
 class VendorService {
   final int id;
   final String serviceType;
+  final String categoryType;
   final String description;
   final double price;
   final List<String> images;
@@ -159,6 +160,7 @@ class VendorService {
   VendorService({
     required this.id,
     required this.serviceType,
+    required this.categoryType,
     required this.description,
     required this.price,
     required this.images,
@@ -175,7 +177,12 @@ class VendorService {
   }) {
     return VendorService(
       id: json['id'] ?? 0,
-      serviceType: json['serviceType'] ?? json['service_type'] ?? '',
+      // serviceType: json['serviceType'] ?? json['service_type'] ?? '',
+      serviceType:
+          isPackage
+              ? json['package_name'] ?? 'Package'
+              : json['serviceType'] ?? json['service_type'] ?? '',
+      categoryType: json['service_types'] ?? '',
       description: json['description'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
       images: List<String>.from(json['images'] ?? []),
@@ -195,6 +202,7 @@ class VendorService {
     return {
       'id': id,
       'serviceType': serviceType,
+      'categoryType': categoryType,
       'description': description,
       'price': price,
       'images': images,

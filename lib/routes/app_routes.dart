@@ -12,6 +12,7 @@ import '../screens/registerpage.dart';
 import '../screens/loginpage.dart';
 // import '../screens/vendor_service_page.dart';
 import '../screens/add_cart_page.dart';
+// import '../screens/custom_package_detail_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String booking = '/booking';
   static const String sercies = '/vendor-services';
   static const String addcart = '/addcart';
+  static const String customPackageDetail = '/custom-package-detail';
 
   static final routes = <String, WidgetBuilder>{
     splash: (context) => const SplashScreen(),
@@ -42,5 +44,7 @@ class AppRoutes {
     register: (context) => const RegisterPage(),
     login: (context) => const LoginPage(),
     addcart: (context) => const AddCartPage(),
+
+    // customPackageDetail: (context) => const CustomPackageDetailPage(packageId: 0),
   };
 }

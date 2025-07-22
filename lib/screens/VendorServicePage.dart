@@ -872,6 +872,14 @@ class _VendorServicePageState extends State<VendorServicePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Text(
+            //   item.serviceType + (item.isPackage ? " (Package)" : ""),
+            //   style: GoogleFonts.roboto(
+            //     fontSize: 20,
+            //     fontWeight: FontWeight.bold,
+            //     color: Colors.brown.shade900,
+            //   ),
+            // ),
             Text(
               item.serviceType + (item.isPackage ? " (Package)" : ""),
               style: GoogleFonts.roboto(
@@ -880,6 +888,16 @@ class _VendorServicePageState extends State<VendorServicePage> {
                 color: Colors.brown.shade900,
               ),
             ),
+            if (item.isPackage)
+              Text(
+                "Services: ${item.categoryType}",
+                style: GoogleFonts.roboto(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.deepOrange,
+                ),
+              ),
+
             const SizedBox(height: 8),
             Text(
               item.description,
