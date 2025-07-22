@@ -249,8 +249,6 @@
 //   }
 // }
 
-
-
 // import 'dart:async';
 // import 'dart:convert';
 // import 'package:flutter/material.dart';
@@ -642,7 +640,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
 import '../screens/custom_package_detail_page.dart';
+import '../screens/service_vendor_page.dart'; // ✅ Make sure this file exists
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -671,6 +671,7 @@ class _HomePageState extends State<HomePage> {
   int _currentSlide = 0;
   late PageController _pageController;
   Timer? _timer;
+
   List<dynamic> customPackages = [];
   bool isLoading = true;
 
@@ -700,6 +701,7 @@ class _HomePageState extends State<HomePage> {
       final response = await http.get(
         Uri.parse("http://192.168.1.6:8000/api/showCustomPackage"),
       );
+
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         setState(() {
@@ -732,30 +734,124 @@ class _HomePageState extends State<HomePage> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            _buildSearchBar(),
+            const SizedBox(height: 16),
             _buildImageSlider(),
             const SizedBox(height: 24),
-            _buildServiceSection(),
+            _buildAnimatedBanner(),
             const SizedBox(height: 24),
-            _buildCustomPackageSection(),
+            _buildServiceSection(), // ✅ Fixed: Services section
+            const SizedBox(height: 24),
+            _buildCustomPackageSection(), // ✅ Custom packages section
           ],
         ),
       ),
     );
   }
 
-  Widget _buildImageSlider() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: SizedBox(
-        height: 180,
-        child: PageView.builder(
-          controller: _pageController,
-          itemCount: sliderImages.length,
-          itemBuilder: (context, index) {
-            return Image.asset(sliderImages[index], fit: BoxFit.cover);
-          },
+  Widget _buildSearchBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade300,
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: const TextField(
+        decoration: InputDecoration(
+          icon: Icon(Icons.search, color: Colors.deepOrange),
+          hintText: "Search wedding services...",
+          border: InputBorder.none,
         ),
       ),
+    );
+  }
+
+  Widget _buildImageSlider() {
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SizedBox(
+            height: 180,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: sliderImages.length,
+              onPageChanged: (index) => setState(() => _currentSlide = index),
+              itemBuilder: (context, index) {
+                return Image.asset(
+                  sliderImages[index],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                );
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(sliderImages.length, (index) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: _currentSlide == index ? 16 : 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color:
+                    _currentSlide == index
+                        ? Colors.deepOrange
+                        : Colors.grey[400],
+                borderRadius: BorderRadius.circular(4),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAnimatedBanner() {
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(seconds: 1),
+      tween: Tween(begin: 0, end: 1),
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 20),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFEECE9), Color(0xFFFFD6C8)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  "Plan Your Dream Wedding\nwith Marry Mate",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromARGB(255, 12, 12, 12),
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -763,33 +859,80 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Our Premium Services", style: GoogleFonts.playfairDisplay(fontSize: 24, fontWeight: FontWeight.bold)),
+        Text(
+          "Our Premium Services",
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
         const SizedBox(height: 16),
         SizedBox(
           height: 230,
-          child: ListView.builder(
+          child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: services.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 16),
             itemBuilder: (context, index) {
               final service = services[index];
-              return Container(
-                width: 180,
-                margin: const EdgeInsets.only(right: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                    image: AssetImage(service['image']!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      service['name']!,
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => ServiceVendorPage(
+                            serviceName: service['name']!,
+                            headerImage: service['image']!,
+                          ),
                     ),
+                  );
+                },
+                child: Container(
+                  width: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage(service['image']!),
+                      fit: BoxFit.cover,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.black.withOpacity(0.5),
+                              Colors.transparent,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 10,
+                        left: 12,
+                        child: Text(
+                          service['name']!,
+                          style: GoogleFonts.roboto(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
@@ -804,57 +947,94 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Our Custom Packages", style: GoogleFonts.playfairDisplay(fontSize: 24, fontWeight: FontWeight.bold)),
+        Text(
+          "Our Custom Packages",
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
         const SizedBox(height: 16),
         isLoading
             ? const Center(child: CircularProgressIndicator())
             : SizedBox(
-                height: 230,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: customPackages.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 16),
-                  itemBuilder: (context, index) {
-                    final package = customPackages[index];
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CustomPackageDetailPage(packageId: package['ap_id']),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: 180,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: const DecorationImage(
-                            image: AssetImage("assets/images/custompackageimage.jpg"),
-                            fit: BoxFit.cover,
-                          ),
+              height: 230,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: customPackages.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 16),
+                itemBuilder: (context, index) {
+                  final package = customPackages[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) =>
+                              // CustomPackageDetailPage(packageData: package),
+                              CustomPackageDetailPage(
+                                packageId:
+                                    package['ap_id'], // make sure this matches your backend key
+                                packageData: package,
+                              ),
                         ),
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Text(
-                              package['package_name'] ?? '',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                      );
+                    },
+                    child: Container(
+                      width: 180,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            "assets/images/custompackageimage.jpg",
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.4),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.black.withOpacity(0.5),
+                                  Colors.transparent,
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
                               ),
                             ),
                           ),
-                        ),
+                          Positioned(
+                            bottom: 10,
+                            left: 12,
+                            child: Text(
+                              package['package_name'] ?? '',
+                              style: GoogleFonts.roboto(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
+            ),
       ],
     );
   }
 }
-
