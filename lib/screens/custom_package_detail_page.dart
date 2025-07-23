@@ -161,6 +161,14 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
   List<dynamic> predefinedPackages = [];
   bool isLoading = true;
 
+  bool isOneDaySelected = true;
+  DateTime? selectedDate;
+  DateTimeRange? selectedRange;
+
+  bool isSelectingRangeStart = true;
+  DateTime? tempStart;
+  DateTime? tempEnd;
+
   @override
   void initState() {
     super.initState();
@@ -190,6 +198,162 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
       print("Error fetching package: $e");
       setState(() => isLoading = false);
     }
+  }
+
+  void showDatePickerModal() {
+    DateTime? tempDate = selectedDate;
+    DateTimeRange? tempRange = selectedRange;
+    bool tempIsOneDay = isOneDaySelected;
+
+    tempStart = null;
+    tempEnd = null;
+    isSelectingRangeStart = true;
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: StatefulBuilder(
+              builder: (context, setModalState) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "Select Booking Type",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ChoiceChip(
+                            label: const Text("One Day"),
+                            selected: tempIsOneDay,
+                            onSelected: (_) {
+                              setModalState(() {
+                                tempIsOneDay = true;
+                                tempDate = null;
+                              });
+                            },
+                            selectedColor: Colors.orange.shade200,
+                          ),
+                          const SizedBox(width: 10),
+                          ChoiceChip(
+                            label: const Text("Date Range"),
+                            selected: !tempIsOneDay,
+                            onSelected: (_) {
+                              setModalState(() {
+                                tempIsOneDay = false;
+                                tempStart = null;
+                                tempEnd = null;
+                                isSelectingRangeStart = true;
+                              });
+                            },
+                            selectedColor: Colors.orange.shade200,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      CalendarDatePicker(
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2100),
+                        onDateChanged: (date) {
+                          setModalState(() {
+                            if (tempIsOneDay) {
+                              tempDate = date;
+                            } else {
+                              if (isSelectingRangeStart) {
+                                tempStart = date;
+                                tempEnd = null;
+                                isSelectingRangeStart = false;
+                              } else {
+                                if (tempStart != null &&
+                                    date.isAfter(tempStart!)) {
+                                  tempEnd = date;
+                                  tempRange = DateTimeRange(
+                                    start: tempStart!,
+                                    end: tempEnd!,
+                                  );
+                                } else {
+                                  // Reset if end is before start
+                                  tempStart = date;
+                                  tempEnd = null;
+                                  tempRange = null;
+                                  isSelectingRangeStart = false;
+                                }
+                              }
+                            }
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            isOneDaySelected = tempIsOneDay;
+                            selectedDate = tempDate;
+                            selectedRange = tempRange;
+                          });
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepOrange,
+                        ),
+                        child: const Text("OK"),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget displaySelectedDate() {
+    if (isOneDaySelected && selectedDate != null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Text(
+          "Selected: ${selectedDate!.toLocal().toString().split(' ')[0]}",
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.deepOrange,
+          ),
+        ),
+      );
+    } else if (!isOneDaySelected && selectedRange != null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Text(
+          "Selected: ${selectedRange!.start.toLocal().toString().split(' ')[0]} → ${selectedRange!.end.toLocal().toString().split(' ')[0]}",
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.deepOrange,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget buildImageSlider(String? imagesString, String folder) {
@@ -272,8 +436,6 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // 🔸 Included Services
                     Text(
                       "Included Services",
                       style: const TextStyle(
@@ -284,7 +446,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                     const SizedBox(height: 10),
                     ...services.map(
                       (service) => Card(
-                        color: const Color(0xFFFFF3E0), // light orange tone
+                        color: const Color(0xFFFFF3E0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -317,13 +479,14 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                                 service['images'],
                                 'service-image',
                               ),
+                              displaySelectedDate(),
                               const SizedBox(height: 10),
                               Center(
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.deepOrange,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: showDatePickerModal,
                                   child: const Text("Select"),
                                 ),
                               ),
@@ -332,10 +495,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                         ),
                       ),
                     ),
-
                     const Divider(height: 30),
-
-                    // 🔸 Predefined Packages
                     if (predefinedPackages.isNotEmpty) ...[
                       Text(
                         "Predefined Packages",
@@ -347,7 +507,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                       const SizedBox(height: 10),
                       ...predefinedPackages.map(
                         (pkg) => Card(
-                          color: const Color(0xFFFFF3E0), // same background
+                          color: const Color(0xFFFFF3E0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -380,13 +540,14 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                                   pkg['images'],
                                   'package-image',
                                 ),
+                                displaySelectedDate(),
                                 const SizedBox(height: 10),
                                 Center(
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.deepOrange,
                                     ),
-                                    onPressed: () {},
+                                    onPressed: showDatePickerModal,
                                     child: const Text("Select"),
                                   ),
                                 ),
