@@ -115,6 +115,36 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
     }
   }
 
+  // 🔁 Add this to your _CustomPackageDetailPageState class
+
+  int calculateTotalDynamicPrice() {
+    int total = 0;
+
+    for (var item in services + predefinedPackages) {
+      final vendorId = item['vendor_id'];
+      final id = item['id'] ?? item['sp_id'];
+      final type = services.contains(item) ? 'service' : 'package';
+      final uniqueKey = "$type-$vendorId-$id";
+
+      if (userHasSelectedDateMap[uniqueKey] == true) {
+        final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
+        // final DateTime? selectedDate = selectedDateMap[uniqueKey];
+        final DateTimeRange? selectedRange = selectedRangeMap[uniqueKey];
+
+        int days = 1; // default for one day
+
+        if (!isOneDay && selectedRange != null) {
+          days = selectedRange.end.difference(selectedRange.start).inDays + 1;
+        }
+
+        int price = int.tryParse(item['price'].toString()) ?? 0;
+        total += price * days;
+      }
+    }
+
+    return total;
+  }
+
   void showDatePickerModal(String uniqueKey, int vendorId, String itemName) {
     bool tempIsOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
     DateTime? tempDate = selectedDateMap[uniqueKey];
@@ -449,6 +479,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Custom Package Details")),
+
       body:
           isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -492,6 +523,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                       (s) => buildServiceOrPackageCard(s, 'service-image'),
                     ),
                     const Divider(height: 30),
+
                     if (predefinedPackages.isNotEmpty) ...[
                       const Text(
                         "Predefined Packages",
@@ -504,10 +536,93 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                       ...predefinedPackages.map(
                         (p) => buildServiceOrPackageCard(p, 'package-image'),
                       ),
+                      const SizedBox(height: 100), // Extra space for bottom bar
                     ],
                   ],
                 ),
               ),
+
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFF3E0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, -2),
+            ),
+          ],
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Price Text
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Total",
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "₹${calculateTotalDynamicPrice()}",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                ],
+              ),
+
+              // Book Now Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Proceeding with total ₹${calculateTotalDynamicPrice()}",
+                      ),
+                    ),
+                  );
+                },
+                // icon: const Icon(Icons.shopping_cart_checkout, size: 18),
+                label: const Text(
+                  "Book Now",
+                  style: TextStyle(fontSize: 15, color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 3,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
