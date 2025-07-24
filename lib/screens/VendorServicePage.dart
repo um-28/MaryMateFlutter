@@ -559,7 +559,7 @@ class _VendorServicePageState extends State<VendorServicePage> {
   Future<void> fetchVendorData() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.6:8000/api/services/${widget.vendorId}'),
+        Uri.parse('http://192.168.1.7:8000/api/services/${widget.vendorId}'),
         headers: {'Accept': 'application/json'},
       );
 
@@ -738,7 +738,7 @@ class _VendorServicePageState extends State<VendorServicePage> {
                             ? () async {
                               final res = await http.post(
                                 Uri.parse(
-                                  "http://192.168.1.6:8000/api/checkdate",
+                                  "http://192.168.1.7:8000/api/checkdate",
                                 ),
                                 headers: {'Accept': 'application/json'},
                                 body: {

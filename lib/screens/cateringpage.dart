@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class CateringPage extends StatelessWidget {
   const CateringPage({super.key});
 
-  final bool hasVendors = false; // ✅ Set to true to show vendor content
+  final bool hasVendors = false; 
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class CateringPage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // 🔺 Stylish Header
+         
           Stack(
             children: [
               ClipRRect(
@@ -21,7 +21,7 @@ class CateringPage extends StatelessWidget {
                   bottomRight: Radius.circular(28),
                 ),
                 child: Image.asset(
-                  "assets/images/catering.jpg", // ✅ Ensure this image exists
+                  "assets/images/catering.jpg", 
                   width: double.infinity,
                   height: 260,
                   fit: BoxFit.cover,
