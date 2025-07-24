@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
+import '../screens/checkout_page.dart';
 
 // your StatefulWidget class
 class CustomPackageDetailPage extends StatefulWidget {
@@ -116,29 +117,34 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
   }
 
   // 🔁 Add this to your _CustomPackageDetailPageState class
+  double calculateTotalDynamicPrice() {
+    double total = 0.0;
+    final combinedList = [...services, ...predefinedPackages];
 
-  int calculateTotalDynamicPrice() {
-    int total = 0;
-
-    for (var item in services + predefinedPackages) {
+    for (var item in combinedList) {
       final vendorId = item['vendor_id'];
       final id = item['id'] ?? item['sp_id'];
-      final type = services.contains(item) ? 'service' : 'package';
+      final type = item.containsKey('service_type') ? 'service' : 'package';
       final uniqueKey = "$type-$vendorId-$id";
 
       if (userHasSelectedDateMap[uniqueKey] == true) {
         final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
-        // final DateTime? selectedDate = selectedDateMap[uniqueKey];
-        final DateTimeRange? selectedRange = selectedRangeMap[uniqueKey];
+        final startDate =
+            isOneDay
+                ? selectedDateMap[uniqueKey]
+                : selectedRangeMap[uniqueKey]?.start;
+        final endDate =
+            isOneDay
+                ? selectedDateMap[uniqueKey]
+                : selectedRangeMap[uniqueKey]?.end;
 
-        int days = 1; // default for one day
-
-        if (!isOneDay && selectedRange != null) {
-          days = selectedRange.end.difference(selectedRange.start).inDays + 1;
+        int dayCount = 1;
+        if (!isOneDay && startDate != null && endDate != null) {
+          dayCount = endDate.difference(startDate).inDays + 1;
         }
 
-        int price = int.tryParse(item['price'].toString()) ?? 0;
-        total += price * days;
+        final price = double.tryParse(item['price'].toString()) ?? 0.0;
+        total += price * dayCount;
       }
     }
 
@@ -594,14 +600,78 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
               // Book Now Button
               ElevatedButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Proceeding with total ₹${calculateTotalDynamicPrice()}",
+                  final selectedServices = <Map<String, dynamic>>[];
+                  final selectedPackages = <Map<String, dynamic>>[];
+
+                  final combinedList = [...services, ...predefinedPackages];
+
+                  for (var item in combinedList) {
+                    final vendorId = item['vendor_id'];
+                    final id = item['id'] ?? item['ap_id'];
+                    final type =
+                        item.containsKey('service_type')
+                            ? 'service'
+                            : 'package';
+                    final uniqueKey = "$type-$vendorId-$id";
+
+                    if (userHasSelectedDateMap[uniqueKey] == true) {
+                      final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
+                      final startDate =
+                          isOneDay
+                              ? selectedDateMap[uniqueKey]
+                              : selectedRangeMap[uniqueKey]?.start;
+                      final endDate =
+                          isOneDay
+                              ? selectedDateMap[uniqueKey]
+                              : selectedRangeMap[uniqueKey]?.end;
+
+                      if (startDate != null && endDate != null) {
+                        final data = {
+                          'id': id,
+                          'start_date': startDate.toString().split(' ')[0],
+                          'end_date': endDate.toString().split(' ')[0],
+                        };
+
+                        if (type == 'service') {
+                          selectedServices.add(data);
+                        } else {
+                          selectedPackages.add(data);
+                        }
+                      }
+                    }
+                  }
+
+                  if (selectedServices.isEmpty && selectedPackages.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Please select at least one service or package.",
+                        ),
                       ),
+                    );
+                    return;
+                  }
+
+                  // Prevent null ID crash
+                  final apId =
+                      customPackage != null && customPackage!['id'] != null
+                          ? int.tryParse(customPackage!['id'].toString()) ?? 0
+                          : 0;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => CheckoutPage(
+                            totalPrice: calculateTotalDynamicPrice(),
+                            apId: apId,
+                            selectedServices: selectedServices,
+                            selectedPackages: selectedPackages,
+                          ),
                     ),
                   );
                 },
+
                 // icon: const Icon(Icons.shopping_cart_checkout, size: 18),
                 label: const Text(
                   "Book Now",
