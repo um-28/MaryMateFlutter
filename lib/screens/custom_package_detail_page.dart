@@ -40,7 +40,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          "http://192.168.1.7:8000/api/showCustomPackageData/${widget.packageId}",
+          "http://192.168.1.6:8000/api/showCustomPackageData/${widget.packageId}",
         ),
       );
 
@@ -86,7 +86,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.7:8000/api/checkdate"),
+        Uri.parse("http://192.168.1.6:8000/api/checkdate"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "vendor_id": vendorId,
@@ -293,7 +293,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                           try {
                             final response = await http.post(
                               Uri.parse(
-                                "http://192.168.1.7:8000/api/checkdate",
+                                "http://192.168.1.6:8000/api/checkdate",
                               ),
                               headers: {'Content-Type': 'application/json'},
                               body: jsonEncode({
@@ -399,7 +399,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
         itemCount: imageList.length,
         itemBuilder: (context, index) {
           final imageUrl =
-              "http://192.168.1.7:8000/$folder/${imageList[index].trim()}";
+              "http://192.168.1.6:8000/$folder/${imageList[index].trim()}";
           return GestureDetector(
             onTap: () {
               showDialog(
@@ -608,6 +608,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                   for (var item in combinedList) {
                     final vendorId = item['vendor_id'];
                     final id = item['id'] ?? item['ap_id'];
+                    final name = item['name'] ?? 'Unnamed'; // Safe label
                     final type =
                         item.containsKey('service_type')
                             ? 'service'
@@ -628,6 +629,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                       if (startDate != null && endDate != null) {
                         final data = {
                           'id': id,
+                          'name': name,
                           'start_date': startDate.toString().split(' ')[0],
                           'end_date': endDate.toString().split(' ')[0],
                         };
@@ -652,10 +654,11 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                     return;
                   }
 
-                  // Prevent null ID crash
+                  // final apId = customPackage?.ap_id ?? 0;
                   final apId =
-                      customPackage != null && customPackage!['id'] != null
-                          ? int.tryParse(customPackage!['id'].toString()) ?? 0
+                      customPackage != null && customPackage?['ap_id'] != null
+                          ? int.tryParse(customPackage!['ap_id'].toString()) ??
+                              0
                           : 0;
 
                   Navigator.push(

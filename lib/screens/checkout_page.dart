@@ -139,7 +139,6 @@ class CheckoutPage extends StatefulWidget {
   final int apId;
   final List<Map<String, dynamic>> selectedServices;
   final List<Map<String, dynamic>> selectedPackages;
-  
 
   const CheckoutPage({
     super.key,

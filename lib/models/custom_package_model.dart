@@ -17,7 +17,7 @@ class CustomPackage {
 
   factory CustomPackage.fromJson(Map<String, dynamic> json) {
     return CustomPackage(
-      ap_id: json['ap_id'], // ✅ fixed this line
+      ap_id: json['ap_id'],
       packageName: json['package_name'],
       description: json['description'],
       serviceIds: json['service_ids'],

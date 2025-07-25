@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // final url = Uri.parse("http://10.0.2.2:8000/api/login"); // Android emulator ke liye use 10.0.2.2
     //  final url = Uri.parse("http://localhost:8000/api/login"); // for web
-    final url = Uri.parse("http://192.168.1.7:8000/api/login");
+    final url = Uri.parse("http://192.168.1.6:8000/api/login");
 
     try {
       final response = await http.post(
