@@ -663,8 +663,8 @@ class _HomePageState extends State<HomePage> {
     {"name": "Decorator", "image": "assets/images/decor.jpg"},
     {"name": "Catering", "image": "assets/images/catering.jpg"},
     {"name": "Pandit", "image": "assets/images/pandit.jpg"},
-    {"name": "DJ & Sound", "image": "assets/images/dj.jpg"},
-    {"name": "Salon", "image": "assets/images/saloon.jpg"},
+    {"name": "DJ & Sound System", "image": "assets/images/dj.jpg"},
+    {"name": "Saloon", "image": "assets/images/saloon.jpg"},
     {"name": "Transport", "image": "assets/images/trasport.jpg"},
   ];
 

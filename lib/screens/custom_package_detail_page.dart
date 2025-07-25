@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/checkout_page.dart';
 
 // your StatefulWidget class
@@ -625,12 +626,17 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                 //   for (var item in combinedList) {
                 //     final vendorId = item['vendor_id'];
                 //     final id = item['id'] ?? item['ap_id'];
-                //     final name = item['name'] ?? 'Unnamed'; // Safe label
                 //     final type =
                 //         item.containsKey('service_type')
                 //             ? 'service'
                 //             : 'package';
                 //     final uniqueKey = "$type-$vendorId-$id";
+
+                //     // Fix name
+                //     final name =
+                //         type == 'service'
+                //             ? item['service_type'] ?? 'Unnamed Service'
+                //             : item['package_name'] ?? 'Unnamed Package';
 
                 //     if (userHasSelectedDateMap[uniqueKey] == true) {
                 //       final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
@@ -652,8 +658,10 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                 //         };
 
                 //         if (type == 'service') {
+                //           data['service_id'] = item['service_id'] ?? id;
                 //           selectedServices.add(data);
                 //         } else {
+                //           data['package_id'] = item['package_id'] ?? id;
                 //           selectedPackages.add(data);
                 //         }
                 //       }
@@ -671,7 +679,6 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                 //     return;
                 //   }
 
-                //   // final apId = customPackage?.ap_id ?? 0;
                 //   final apId =
                 //       customPackage != null && customPackage?['ap_id'] != null
                 //           ? int.tryParse(customPackage!['ap_id'].toString()) ??
@@ -691,7 +698,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                 //     ),
                 //   );
                 // },
-                onPressed: () {
+                onPressed: () async {
                   final selectedServices = <Map<String, dynamic>>[];
                   final selectedPackages = <Map<String, dynamic>>[];
 
@@ -704,13 +711,11 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                         item.containsKey('service_type')
                             ? 'service'
                             : 'package';
-                    final uniqueKey = "$type-$vendorId-$id";
-
-                    // Fix name
                     final name =
-                        type == 'service'
-                            ? item['service_type'] ?? 'Unnamed Service'
-                            : item['package_name'] ?? 'Unnamed Package';
+                        item['service_type'] ??
+                        item['package_name'] ??
+                        'Unnamed';
+                    final uniqueKey = "$type-$vendorId-$id";
 
                     if (userHasSelectedDateMap[uniqueKey] == true) {
                       final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
@@ -725,17 +730,19 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
 
                       if (startDate != null && endDate != null) {
                         final data = {
-                          'id': id,
+                          // 'id': id,
                           'name': name,
                           'start_date': startDate.toString().split(' ')[0],
                           'end_date': endDate.toString().split(' ')[0],
+                          if (type == 'service')
+                            'service_id': item['service_id'],
+                          if (type == 'package')
+                            'package_id': item['package_id'],
                         };
 
                         if (type == 'service') {
-                          data['service_id'] = item['service_id'] ?? id;
                           selectedServices.add(data);
                         } else {
-                          data['package_id'] = item['package_id'] ?? id;
                           selectedPackages.add(data);
                         }
                       }
@@ -759,6 +766,10 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                               0
                           : 0;
 
+                  // Fetch user_id from SharedPreferences or other logic
+                  final prefs = await SharedPreferences.getInstance();
+                  final userId = prefs.getInt('user_id') ?? 0;
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -766,6 +777,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                           (_) => CheckoutPage(
                             totalPrice: calculateTotalDynamicPrice(),
                             apId: apId,
+                            userId: userId,
                             selectedServices: selectedServices,
                             selectedPackages: selectedPackages,
                           ),
