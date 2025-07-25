@@ -437,6 +437,12 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
     final uniqueKey = "$type-$vendorId-$id";
     final itemName = item['service_type'] ?? item['package_name'] ?? 'Item';
 
+    // service and package id variables
+    final idLabel =
+        type == 'service'
+            ? 'Service ID: ${item['service_id'] ?? 'N/A'}'
+            : 'Package ID: ${item['package_id'] ?? 'N/A'}';
+
     return Card(
       color: const Color(0xFFFFF3E0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -452,7 +458,18 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
+            // Service and package ids
+            Text(
+              idLabel,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+
             Text(item['description'] ?? "No Description"),
+            // Text(item['service_id']),
             const SizedBox(height: 6),
             Text(
               "₹${item['price']}",
@@ -599,6 +616,81 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
 
               // Book Now Button
               ElevatedButton.icon(
+                // onPressed: () {
+                //   final selectedServices = <Map<String, dynamic>>[];
+                //   final selectedPackages = <Map<String, dynamic>>[];
+
+                //   final combinedList = [...services, ...predefinedPackages];
+
+                //   for (var item in combinedList) {
+                //     final vendorId = item['vendor_id'];
+                //     final id = item['id'] ?? item['ap_id'];
+                //     final name = item['name'] ?? 'Unnamed'; // Safe label
+                //     final type =
+                //         item.containsKey('service_type')
+                //             ? 'service'
+                //             : 'package';
+                //     final uniqueKey = "$type-$vendorId-$id";
+
+                //     if (userHasSelectedDateMap[uniqueKey] == true) {
+                //       final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
+                //       final startDate =
+                //           isOneDay
+                //               ? selectedDateMap[uniqueKey]
+                //               : selectedRangeMap[uniqueKey]?.start;
+                //       final endDate =
+                //           isOneDay
+                //               ? selectedDateMap[uniqueKey]
+                //               : selectedRangeMap[uniqueKey]?.end;
+
+                //       if (startDate != null && endDate != null) {
+                //         final data = {
+                //           'id': id,
+                //           'name': name,
+                //           'start_date': startDate.toString().split(' ')[0],
+                //           'end_date': endDate.toString().split(' ')[0],
+                //         };
+
+                //         if (type == 'service') {
+                //           selectedServices.add(data);
+                //         } else {
+                //           selectedPackages.add(data);
+                //         }
+                //       }
+                //     }
+                //   }
+
+                //   if (selectedServices.isEmpty && selectedPackages.isEmpty) {
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //       const SnackBar(
+                //         content: Text(
+                //           "Please select at least one service or package.",
+                //         ),
+                //       ),
+                //     );
+                //     return;
+                //   }
+
+                //   // final apId = customPackage?.ap_id ?? 0;
+                //   final apId =
+                //       customPackage != null && customPackage?['ap_id'] != null
+                //           ? int.tryParse(customPackage!['ap_id'].toString()) ??
+                //               0
+                //           : 0;
+
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder:
+                //           (_) => CheckoutPage(
+                //             totalPrice: calculateTotalDynamicPrice(),
+                //             apId: apId,
+                //             selectedServices: selectedServices,
+                //             selectedPackages: selectedPackages,
+                //           ),
+                //     ),
+                //   );
+                // },
                 onPressed: () {
                   final selectedServices = <Map<String, dynamic>>[];
                   final selectedPackages = <Map<String, dynamic>>[];
@@ -608,12 +700,17 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                   for (var item in combinedList) {
                     final vendorId = item['vendor_id'];
                     final id = item['id'] ?? item['ap_id'];
-                    final name = item['name'] ?? 'Unnamed'; // Safe label
                     final type =
                         item.containsKey('service_type')
                             ? 'service'
                             : 'package';
                     final uniqueKey = "$type-$vendorId-$id";
+
+                    // Fix name
+                    final name =
+                        type == 'service'
+                            ? item['service_type'] ?? 'Unnamed Service'
+                            : item['package_name'] ?? 'Unnamed Package';
 
                     if (userHasSelectedDateMap[uniqueKey] == true) {
                       final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
@@ -635,8 +732,10 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                         };
 
                         if (type == 'service') {
+                          data['service_id'] = item['service_id'] ?? id;
                           selectedServices.add(data);
                         } else {
+                          data['package_id'] = item['package_id'] ?? id;
                           selectedPackages.add(data);
                         }
                       }
@@ -654,7 +753,6 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                     return;
                   }
 
-                  // final apId = customPackage?.ap_id ?? 0;
                   final apId =
                       customPackage != null && customPackage?['ap_id'] != null
                           ? int.tryParse(customPackage!['ap_id'].toString()) ??
