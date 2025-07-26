@@ -329,6 +329,7 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:marry_mate28/screens/Checkout2Page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../data/cart_data.dart';
 
 class AddCartPage extends StatefulWidget {
@@ -609,7 +610,7 @@ class _AddCartPageState extends State<AddCartPage> {
                             ),
                             const SizedBox(height: 14),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 final List<Map<String, dynamic>> checkoutData =
                                     globalCartItems.map((item) {
                                       print("Preparing item:");
@@ -629,6 +630,11 @@ class _AddCartPageState extends State<AddCartPage> {
                                       };
                                     }).toList();
 
+                                // ignore: prefer_typing_uninitialized_variables
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                final userId = prefs.getInt('user_id') ?? 0;
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -637,7 +643,7 @@ class _AddCartPageState extends State<AddCartPage> {
                                           cartItems: checkoutData,
                                           totalPrice: getTotalPrice(),
                                           userId:
-                                              1, // Replace with real user ID
+                                              userId, // Replace with real user ID
                                         ),
                                   ),
                                 );

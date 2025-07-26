@@ -699,7 +699,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchCustomPackages() async {
     try {
       final response = await http.get(
-        Uri.parse("http://192.168.1.6:8000/api/showCustomPackage"),
+        Uri.parse("http://172.20.10.2:8000/api/showCustomPackage"),
       );
 
       if (response.statusCode == 200) {

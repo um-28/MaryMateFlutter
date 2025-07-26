@@ -40,7 +40,7 @@ class _VendorServicePageState extends State<VendorServicePage> {
   Future<void> fetchVendorData() async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.6:8000/api/services/${widget.vendorId}'),
+        Uri.parse('http://172.20.10.2:8000/api/services/${widget.vendorId}'),
         headers: {'Accept': 'application/json'},
       );
 
@@ -219,7 +219,7 @@ class _VendorServicePageState extends State<VendorServicePage> {
                             ? () async {
                               final res = await http.post(
                                 Uri.parse(
-                                  "http://192.168.1.6:8000/api/checkdate",
+                                  "http://172.20.10.2:8000/api/checkdate",
                                 ),
                                 headers: {'Accept': 'application/json'},
                                 body: {
@@ -353,14 +353,6 @@ class _VendorServicePageState extends State<VendorServicePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Text(
-            //   item.serviceType + (item.isPackage ? " (Package)" : ""),
-            //   style: GoogleFonts.roboto(
-            //     fontSize: 20,
-            //     fontWeight: FontWeight.bold,
-            //     color: Colors.brown.shade900,
-            //   ),
-            // ),
             Text(
               item.serviceType + (item.isPackage ? " (Package)" : ""),
               style: GoogleFonts.roboto(
@@ -378,7 +370,6 @@ class _VendorServicePageState extends State<VendorServicePage> {
                   color: Colors.deepOrange,
                 ),
               ),
-
             const SizedBox(height: 8),
             Text(
               item.description,
@@ -393,6 +384,17 @@ class _VendorServicePageState extends State<VendorServicePage> {
                 color: Colors.green,
               ),
             ),
+            const SizedBox(height: 6),
+
+            // ✅ SHOW vendor_id, service_id, package_id
+            Text(
+              "Vendor ID: ${item.vendorId} | Service ID: ${item.serviceId}" +
+                  (item.isPackage && item.packageId != null
+                      ? " | Package ID: ${item.packageId}"
+                      : ""),
+              style: const TextStyle(fontSize: 13, color: Colors.grey),
+            ),
+
             const SizedBox(height: 12),
             item.images.isNotEmpty
                 ? SizedBox(
