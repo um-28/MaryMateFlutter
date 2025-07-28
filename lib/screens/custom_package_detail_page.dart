@@ -41,7 +41,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          "http://172.20.10.2:8000/api/showCustomPackageData/${widget.packageId}",
+          "http://192.168.1.4:8000/api/showCustomPackageData/${widget.packageId}",
         ),
       );
 
@@ -87,7 +87,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://172.20.10.2:8000/api/checkdate"),
+        Uri.parse("http://192.168.1.4:8000/api/checkdate"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "vendor_id": vendorId,
@@ -294,7 +294,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                           try {
                             final response = await http.post(
                               Uri.parse(
-                                "http://172.20.10.2:8000/api/checkdate",
+                                "http://192.168.1.4:8000/api/checkdate",
                               ),
                               headers: {'Content-Type': 'application/json'},
                               body: jsonEncode({

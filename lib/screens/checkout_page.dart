@@ -504,7 +504,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://172.20.10.2:8000/api/custompackagebooking'),
+          Uri.parse('http://192.168.1.4:8000/api/custompackagebooking'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(bookingData),
         );
