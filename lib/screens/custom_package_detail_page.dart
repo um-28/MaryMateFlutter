@@ -400,7 +400,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
         itemCount: imageList.length,
         itemBuilder: (context, index) {
           final imageUrl =
-              "http://192.168.1.6:8000/$folder/${imageList[index].trim()}";
+              "http://192.168.1.4:8000/$folder/${imageList[index].trim()}";
           return GestureDetector(
             onTap: () {
               showDialog(
