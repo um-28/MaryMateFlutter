@@ -899,6 +899,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.grey.withOpacity(0.4),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
@@ -912,6 +913,7 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(20),
                           gradient: LinearGradient(
                             colors: [
+                              // ignore: deprecated_member_use
                               Colors.black.withOpacity(0.5),
                               Colors.transparent,
                             ],
@@ -994,6 +996,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.grey.withOpacity(0.4),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
@@ -1007,6 +1010,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(20),
                               gradient: LinearGradient(
                                 colors: [
+                                  // ignore: deprecated_member_use
                                   Colors.black.withOpacity(0.5),
                                   Colors.transparent,
                                 ],

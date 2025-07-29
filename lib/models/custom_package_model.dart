@@ -1,5 +1,5 @@
 class CustomPackage {
-  final int ap_id;
+  final int apId;
   final String packageName;
   final String description;
   final String serviceIds;
@@ -7,7 +7,7 @@ class CustomPackage {
   final double totalCost;
 
   CustomPackage({
-    required this.ap_id,
+    required this.apId,
     required this.packageName,
     required this.description,
     required this.serviceIds,
@@ -17,7 +17,7 @@ class CustomPackage {
 
   factory CustomPackage.fromJson(Map<String, dynamic> json) {
     return CustomPackage(
-      ap_id: json['ap_id'],
+      apId: json['ap_id'],
       packageName: json['package_name'],
       description: json['description'],
       serviceIds: json['service_ids'],

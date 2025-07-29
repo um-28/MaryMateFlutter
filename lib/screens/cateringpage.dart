@@ -36,6 +36,7 @@ class CateringPage extends StatelessWidget {
                   ),
                   gradient: LinearGradient(
                     colors: [
+                      // ignore: deprecated_member_use
                       Colors.black.withOpacity(0.5),
                       Colors.transparent,
                     ],
@@ -48,6 +49,7 @@ class CateringPage extends StatelessWidget {
                 top: 48,
                 left: 16,
                 child: CircleAvatar(
+                  // ignore: deprecated_member_use
                   backgroundColor: Colors.white.withOpacity(0.9),
                   child: IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -91,7 +93,7 @@ class CateringPage extends StatelessWidget {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () {
-                              // TODO: Navigate to vendor list / booking
+                            
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,

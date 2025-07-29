@@ -111,6 +111,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
             data['status'] == 'available' ? Colors.green : Colors.redAccent,
         margin: const EdgeInsets.all(8),
         borderRadius: BorderRadius.circular(10),
+      // ignore: use_build_context_synchronously
       ).show(context);
     } catch (e) {
       print("API error: $e");
@@ -277,8 +278,9 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                           final range = tempRange;
 
                           if ((isOneDay && oneDayDate == null) ||
-                              (!isOneDay && range == null))
+                              (!isOneDay && range == null)) {
                             return;
+                          }
 
                           final startDate =
                               isOneDay
@@ -316,6 +318,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                                 backgroundColor: Colors.redAccent,
                                 margin: const EdgeInsets.all(8),
                                 borderRadius: BorderRadius.circular(10),
+                              // ignore: use_build_context_synchronously
                               ).show(context);
                               return;
                             }
@@ -327,6 +330,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                               userHasSelectedDateMap[uniqueKey] = true;
                             });
 
+                            // ignore: use_build_context_synchronously
                             Navigator.pop(context);
                             checkDateAvailability(
                               uniqueKey,
@@ -355,8 +359,9 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
   }
 
   Widget displaySelectedDate(String uniqueKey) {
-    if (userHasSelectedDateMap[uniqueKey] != true)
+    if (userHasSelectedDateMap[uniqueKey] != true) {
       return const SizedBox.shrink();
+    }
 
     final isOneDaySelected = isOneDaySelectedMap[uniqueKey] ?? true;
     final selectedDate = selectedDateMap[uniqueKey];
@@ -585,6 +590,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
+                // ignore: deprecated_member_use
                 color: Colors.grey.withOpacity(0.2),
                 blurRadius: 6,
                 offset: const Offset(0, 3),
@@ -771,6 +777,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                   final userId = prefs.getInt('user_id') ?? 0;
 
                   Navigator.push(
+                    // ignore: use_build_context_synchronously
                     context,
                     MaterialPageRoute(
                       builder:

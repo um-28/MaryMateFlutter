@@ -248,8 +248,9 @@ class _VendorServicePageState extends State<VendorServicePage> {
                                   }
                                 });
                                 saveCartToPrefs();
+                                
+                                // ignore: use_build_context_synchronously
                                 Navigator.pop(context);
-
                                 Flushbar(
                                   message:
                                       '${allItems[index].serviceType} added to cart!',
