@@ -57,7 +57,7 @@ class _BottomNavPageState extends State<BottomNavPage> {
 
             return GestureDetector(
               onTap: () {
-                setState(() => _currentIndex = index); 
+                setState(() => _currentIndex = index);
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
