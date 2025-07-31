@@ -33,6 +33,9 @@ class _LoginPageState extends State<LoginPage> {
         body: {'email': email, 'password': password},
       );
 
+      print("Response body: ${response.body}");
+      print("Status code: ${response.statusCode}");
+
       final resData = json.decode(response.body);
 
       if (response.statusCode == 200 && resData['status'] == true) {
@@ -40,15 +43,26 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setInt('user_id', resData['user']['user_id']);
         await prefs.setString('user_name', resData['user']['name']);
         await prefs.setString('user_email', resData['user']['email']);
+        await prefs.setString(
+          'user_contact',
+          resData['user']['contact'].toString(),
+        );
+        await prefs.setString(
+          'user_address',
+          resData['user']['address'].toString(),
+        );
 
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Login successful!"),
             backgroundColor: Colors.green,
           ),
         );
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(resData['message'] ?? 'Login failed'),
@@ -57,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Something went wrong!"),
@@ -249,17 +264,13 @@ class _LoginPageState extends State<LoginPage> {
                         buildSocialButton(
                           icon: 'assets/images/google.png',
                           text: "Continue with Google",
-                          onTap: () {
-                            // TODO: Add Google sign-in logic
-                          },
+                          onTap: () {},
                         ),
                         const SizedBox(height: 16),
                         buildSocialButton(
                           icon: 'assets/images/apple.png',
                           text: "Continue with Apple",
-                          onTap: () {
-                            // TODO: Add Apple sign-in logic
-                          },
+                          onTap: () {},
                         ),
                       ],
                     ),

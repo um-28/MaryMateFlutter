@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/checkout_page.dart';
+import '../screens/loginpage.dart';
 
 // your StatefulWidget class
 class CustomPackageDetailPage extends StatefulWidget {
@@ -111,7 +112,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
             data['status'] == 'available' ? Colors.green : Colors.redAccent,
         margin: const EdgeInsets.all(8),
         borderRadius: BorderRadius.circular(10),
-      // ignore: use_build_context_synchronously
+        // ignore: use_build_context_synchronously
       ).show(context);
     } catch (e) {
       print("API error: $e");
@@ -318,7 +319,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                                 backgroundColor: Colors.redAccent,
                                 margin: const EdgeInsets.all(8),
                                 borderRadius: BorderRadius.circular(10),
-                              // ignore: use_build_context_synchronously
+                                // ignore: use_build_context_synchronously
                               ).show(context);
                               return;
                             }
@@ -493,8 +494,23 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,
                 ),
-                onPressed:
-                    () => showDatePickerModal(uniqueKey, vendorId, itemName),
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  final userId = prefs.getInt('user_id') ?? 0;
+
+                  if (userId == 0) {
+                    // 🔁 Redirect to LoginPage if not logged in
+                    Navigator.pushReplacement(
+                       // ignore: use_build_context_synchronously
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                    );
+                    return;
+                  }
+
+                  // ✅ Old logic runs if logged in
+                  showDatePickerModal(uniqueKey, vendorId, itemName);
+                },
                 child: const Text("Select"),
               ),
             ),
@@ -623,92 +639,13 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
 
               // Book Now Button
               ElevatedButton.icon(
-                // onPressed: () {
-                //   final selectedServices = <Map<String, dynamic>>[];
-                //   final selectedPackages = <Map<String, dynamic>>[];
-
-                //   final combinedList = [...services, ...predefinedPackages];
-
-                //   for (var item in combinedList) {
-                //     final vendorId = item['vendor_id'];
-                //     final id = item['id'] ?? item['ap_id'];
-                //     final type =
-                //         item.containsKey('service_type')
-                //             ? 'service'
-                //             : 'package';
-                //     final uniqueKey = "$type-$vendorId-$id";
-
-                //     // Fix name
-                //     final name =
-                //         type == 'service'
-                //             ? item['service_type'] ?? 'Unnamed Service'
-                //             : item['package_name'] ?? 'Unnamed Package';
-
-                //     if (userHasSelectedDateMap[uniqueKey] == true) {
-                //       final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
-                //       final startDate =
-                //           isOneDay
-                //               ? selectedDateMap[uniqueKey]
-                //               : selectedRangeMap[uniqueKey]?.start;
-                //       final endDate =
-                //           isOneDay
-                //               ? selectedDateMap[uniqueKey]
-                //               : selectedRangeMap[uniqueKey]?.end;
-
-                //       if (startDate != null && endDate != null) {
-                //         final data = {
-                //           'id': id,
-                //           'name': name,
-                //           'start_date': startDate.toString().split(' ')[0],
-                //           'end_date': endDate.toString().split(' ')[0],
-                //         };
-
-                //         if (type == 'service') {
-                //           data['service_id'] = item['service_id'] ?? id;
-                //           selectedServices.add(data);
-                //         } else {
-                //           data['package_id'] = item['package_id'] ?? id;
-                //           selectedPackages.add(data);
-                //         }
-                //       }
-                //     }
-                //   }
-
-                //   if (selectedServices.isEmpty && selectedPackages.isEmpty) {
-                //     ScaffoldMessenger.of(context).showSnackBar(
-                //       const SnackBar(
-                //         content: Text(
-                //           "Please select at least one service or package.",
-                //         ),
-                //       ),
-                //     );
-                //     return;
-                //   }
-
-                //   final apId =
-                //       customPackage != null && customPackage?['ap_id'] != null
-                //           ? int.tryParse(customPackage!['ap_id'].toString()) ??
-                //               0
-                //           : 0;
-
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder:
-                //           (_) => CheckoutPage(
-                //             totalPrice: calculateTotalDynamicPrice(),
-                //             apId: apId,
-                //             selectedServices: selectedServices,
-                //             selectedPackages: selectedPackages,
-                //           ),
-                //     ),
-                //   );
-                // },
                 onPressed: () async {
                   final selectedServices = <Map<String, dynamic>>[];
                   final selectedPackages = <Map<String, dynamic>>[];
 
                   final combinedList = [...services, ...predefinedPackages];
+
+                  bool allSelectedItemsHaveDates = true;
 
                   for (var item in combinedList) {
                     final vendorId = item['vendor_id'];
@@ -723,46 +660,65 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                         'Unnamed';
                     final uniqueKey = "$type-$vendorId-$id";
 
-                    if (userHasSelectedDateMap[uniqueKey] == true) {
-                      final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
-                      final startDate =
-                          isOneDay
-                              ? selectedDateMap[uniqueKey]
-                              : selectedRangeMap[uniqueKey]?.start;
-                      final endDate =
-                          isOneDay
-                              ? selectedDateMap[uniqueKey]
-                              : selectedRangeMap[uniqueKey]?.end;
+                    final isSelected =
+                        userHasSelectedDateMap[uniqueKey] == true;
+                    final isOneDay = isOneDaySelectedMap[uniqueKey] ?? true;
 
-                      if (startDate != null && endDate != null) {
-                        final data = {
-                          // 'id': id,
-                          'name': name,
-                          'start_date': startDate.toString().split(' ')[0],
-                          'end_date': endDate.toString().split(' ')[0],
-                          if (type == 'service')
-                            'service_id': item['service_id'],
-                          if (type == 'package')
-                            'package_id': item['package_id'],
-                        };
+                    final startDate =
+                        isOneDay
+                            ? selectedDateMap[uniqueKey]
+                            : selectedRangeMap[uniqueKey]?.start;
+                    final endDate =
+                        isOneDay
+                            ? selectedDateMap[uniqueKey]
+                            : selectedRangeMap[uniqueKey]?.end;
 
-                        if (type == 'service') {
-                          selectedServices.add(data);
-                        } else {
-                          selectedPackages.add(data);
-                        }
-                      }
+                    if (!isSelected || startDate == null || endDate == null) {
+                      allSelectedItemsHaveDates = false;
+                      break;
+                    }
+
+                    final data = {
+                      'name': name,
+                      'start_date': startDate.toString().split(' ')[0],
+                      'end_date': endDate.toString().split(' ')[0],
+                      if (type == 'service') 'service_id': item['service_id'],
+                      if (type == 'package') 'package_id': item['package_id'],
+                    };
+
+                    if (type == 'service') {
+                      selectedServices.add(data);
+                    } else {
+                      selectedPackages.add(data);
                     }
                   }
 
-                  if (selectedServices.isEmpty && selectedPackages.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Please select at least one service or package.",
-                        ),
+                  // if (!allSelectedItemsHaveDates) {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(
+                  //       content: Text(
+                  //         "Please select dates for all services and packages.",
+                  //       ),
+                  //       behavior: SnackBarBehavior.floating,
+                  //     ),
+                  //   );
+                  //   return;
+                  // }
+
+                  if (!allSelectedItemsHaveDates) {
+                    Flushbar(
+                      message:
+                          "Please select dates for all services and packages.",
+                      backgroundColor: Colors.red,
+                      duration: const Duration(seconds: 3),
+                      flushbarPosition: FlushbarPosition.TOP,
+                      margin: const EdgeInsets.all(12),
+                      borderRadius: BorderRadius.circular(8),
+                      icon: const Icon(
+                        Icons.error_outline,
+                        color: Colors.white,
                       ),
-                    );
+                    ).show(context);
                     return;
                   }
 
@@ -772,7 +728,6 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                               0
                           : 0;
 
-                  // Fetch user_id from SharedPreferences or other logic
                   final prefs = await SharedPreferences.getInstance();
                   final userId = prefs.getInt('user_id') ?? 0;
 

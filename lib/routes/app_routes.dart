@@ -12,6 +12,7 @@ import '../screens/registerpage.dart';
 import '../screens/loginpage.dart';
 // import '../screens/vendor_service_page.dart';
 import '../screens/add_cart_page.dart';
+import '../screens/EditProfilePage.dart';
 // import '../screens/custom_package_detail_page.dart';
 
 class AppRoutes {
@@ -29,6 +30,7 @@ class AppRoutes {
   static const String sercies = '/vendor-services';
   static const String addcart = '/addcart';
   static const String customPackageDetail = '/custom-package-detail';
+  static const String editProfile = '/edit-profile';
 
   static final routes = <String, WidgetBuilder>{
     splash: (context) => const SplashScreen(),
@@ -44,6 +46,7 @@ class AppRoutes {
     register: (context) => const RegisterPage(),
     login: (context) => const LoginPage(),
     addcart: (context) => const AddCartPage(),
+    editProfile: (context) => const EditProfilePage(),
 
     // customPackageDetail: (context) => const CustomPackageDetailPage(packageId: 0),
   };
