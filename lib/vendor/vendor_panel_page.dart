@@ -1,8 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/loginpage.dart';
+import '../vendor/VendorAvailabilityPage.dart';
 
 class VendorPanelPage extends StatefulWidget {
   const VendorPanelPage({super.key});
@@ -77,10 +76,22 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                   ),
                 ),
               ),
+              // buildDrawerItem(
+              //   icon: Icons.event_available,
+              //   title: 'Vendor Availability',
+              //   onTap: () {},
+              // ),
               buildDrawerItem(
                 icon: Icons.event_available,
                 title: 'Vendor Availability',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const VendorAvailabilityPage(),
+                    ),
+                  );
+                },
               ),
               buildDrawerItem(
                 icon: Icons.design_services,
