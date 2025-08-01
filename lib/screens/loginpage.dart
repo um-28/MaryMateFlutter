@@ -19,12 +19,13 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
   Future<void> loginUser() async {
-    setState(() {
-      _isLoading = true;
-    });
+    // setState(() {
+    //   _isLoading = true;
+    // });
+    if (mounted) {
+      setState(() => _isLoading = true);
+    }
 
-    // final url = Uri.parse("http://10.0.2.2:8000/api/login"); // Android emulator ke liye use 10.0.2.2
-    //  final url = Uri.parse("http://localhost:8000/api/login"); // for web
     final url = Uri.parse("http://192.168.1.6:8000/api/login");
 
     try {
@@ -51,13 +52,38 @@ class _LoginPageState extends State<LoginPage> {
       //     'user_address',
       //     resData['user']['address'].toString(),
       //   );
-      //   //  THIS IS REQUIRED FOR SPLASH TO WORK
+
       //   await prefs.setString(
       //     'user_role',
       //     resData['user']['role_as'].toString(),
       //   );
-      //   await prefs.setBool('isLoggedIn', true); // <- This line was missing
 
+      //   await prefs.setBool('isLoggedIn', true);
+
+      //   print(
+      //     "LOGIN SAVED ✅ isLoggedIn: ${prefs.getBool('isLoggedIn')}, user_role: ${prefs.getString('role_as')}",
+      //   );
+
+      //   // ignore: use_build_context_synchronously
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text("Login successful!"),
+      //       backgroundColor: Colors.green,
+      //     ),
+      //   );
+      //   await prefs.setBool('isLoggedIn', true);
+
+      //   // ignore: use_build_context_synchronously
+      //   Navigator.pushReplacementNamed(context, AppRoutes.home);
+      // } else {
+      //   // ignore: use_build_context_synchronously
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text(resData['message'] ?? 'Login failed'),
+      //       backgroundColor: Colors.red,
+      //     ),
+      //   );
+      // }
       if (response.statusCode == 200 && resData['status'] == true) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setInt('user_id', resData['user']['user_id']);
@@ -71,16 +97,15 @@ class _LoginPageState extends State<LoginPage> {
           'user_address',
           resData['user']['address'].toString(),
         );
-
         await prefs.setString(
           'user_role',
           resData['user']['role_as'].toString(),
         );
-
         await prefs.setBool('isLoggedIn', true);
 
+        String userRole = resData['user']['role_as'].toString();
         print(
-          "LOGIN SAVED ✅ isLoggedIn: ${prefs.getBool('isLoggedIn')}, user_role: ${prefs.getString('role_as')}",
+          "LOGIN SAVED ✅ isLoggedIn: ${prefs.getBool('isLoggedIn')}, user_role: $userRole",
         );
 
         // ignore: use_build_context_synchronously
@@ -90,10 +115,26 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.green,
           ),
         );
-        await prefs.setBool('isLoggedIn', true);
 
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        // Navigate based on user role
+        if (userRole == 'C') {
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+
+        } else if (userRole == 'V') {
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacementNamed(context, AppRoutes.vendorPanel);
+          
+        } else {
+          // Fallback if role is unknown
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Invalid role, contact support."),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
