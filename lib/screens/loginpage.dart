@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // final url = Uri.parse("http://10.0.2.2:8000/api/login"); // Android emulator ke liye use 10.0.2.2
     //  final url = Uri.parse("http://localhost:8000/api/login"); // for web
-    final url = Uri.parse("http://192.168.1.4:8000/api/login");
+    final url = Uri.parse("http://192.168.1.6:8000/api/login");
 
     try {
       final response = await http.post(
@@ -37,6 +37,26 @@ class _LoginPageState extends State<LoginPage> {
       print("Status code: ${response.statusCode}");
 
       final resData = json.decode(response.body);
+
+      // if (response.statusCode == 200 && resData['status'] == true) {
+      //   SharedPreferences prefs = await SharedPreferences.getInstance();
+      //   await prefs.setInt('user_id', resData['user']['user_id']);
+      //   await prefs.setString('user_name', resData['user']['name']);
+      //   await prefs.setString('user_email', resData['user']['email']);
+      //   await prefs.setString(
+      //     'user_contact',
+      //     resData['user']['contact'].toString(),
+      //   );
+      //   await prefs.setString(
+      //     'user_address',
+      //     resData['user']['address'].toString(),
+      //   );
+      //   //  THIS IS REQUIRED FOR SPLASH TO WORK
+      //   await prefs.setString(
+      //     'user_role',
+      //     resData['user']['role_as'].toString(),
+      //   );
+      //   await prefs.setBool('isLoggedIn', true); // <- This line was missing
 
       if (response.statusCode == 200 && resData['status'] == true) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -52,6 +72,17 @@ class _LoginPageState extends State<LoginPage> {
           resData['user']['address'].toString(),
         );
 
+        await prefs.setString(
+          'user_role',
+          resData['user']['role_as'].toString(),
+        );
+
+        await prefs.setBool('isLoggedIn', true);
+
+        print(
+          "LOGIN SAVED ✅ isLoggedIn: ${prefs.getBool('isLoggedIn')}, user_role: ${prefs.getString('role_as')}",
+        );
+
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -59,6 +90,8 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.green,
           ),
         );
+        await prefs.setBool('isLoggedIn', true);
+
         // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {

@@ -14,6 +14,7 @@ import '../screens/loginpage.dart';
 import '../screens/add_cart_page.dart';
 import '../screens/EditProfilePage.dart';
 // import '../screens/custom_package_detail_page.dart';
+import '../vendor/business_register_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -32,6 +33,8 @@ class AppRoutes {
   static const String customPackageDetail = '/custom-package-detail';
   static const String editProfile = '/edit-profile';
 
+  static const String businessRegister = 'business-register';
+
   static final routes = <String, WidgetBuilder>{
     splash: (context) => const SplashScreen(),
     welcome: (context) => const WelcomePage(),
@@ -47,6 +50,7 @@ class AppRoutes {
     login: (context) => const LoginPage(),
     addcart: (context) => const AddCartPage(),
     editProfile: (context) => const EditProfilePage(),
+    businessRegister: (context) => const BusinessRegisterPage(),
 
     // customPackageDetail: (context) => const CustomPackageDetailPage(packageId: 0),
   };

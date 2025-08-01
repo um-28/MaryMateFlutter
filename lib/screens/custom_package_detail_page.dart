@@ -42,7 +42,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          "http://192.168.1.4:8000/api/showCustomPackageData/${widget.packageId}",
+          "http://192.168.1.6:8000/api/showCustomPackageData/${widget.packageId}",
         ),
       );
 
@@ -88,7 +88,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.4:8000/api/checkdate"),
+        Uri.parse("http://192.168.1.6:8000/api/checkdate"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "vendor_id": vendorId,
@@ -297,7 +297,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                           try {
                             final response = await http.post(
                               Uri.parse(
-                                "http://192.168.1.4:8000/api/checkdate",
+                                "http://192.168.1.6:8000/api/checkdate",
                               ),
                               headers: {'Content-Type': 'application/json'},
                               body: jsonEncode({
@@ -406,7 +406,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
         itemCount: imageList.length,
         itemBuilder: (context, index) {
           final imageUrl =
-              "http://192.168.1.4:8000/$folder/${imageList[index].trim()}";
+              "http://192.168.1.6:8000/$folder/${imageList[index].trim()}";
           return GestureDetector(
             onTap: () {
               showDialog(
@@ -501,7 +501,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                   if (userId == 0) {
                     // 🔁 Redirect to LoginPage if not logged in
                     Navigator.pushReplacement(
-                       // ignore: use_build_context_synchronously
+                      // ignore: use_build_context_synchronously
                       context,
                       MaterialPageRoute(builder: (_) => const LoginPage()),
                     );
