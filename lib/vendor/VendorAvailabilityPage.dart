@@ -1,7 +1,865 @@
+// import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'AddAvailabilityPage.dart'; // Make sure this is correctly imported
+
+// class VendorAvailabilityPage extends StatefulWidget {
+//   const VendorAvailabilityPage({super.key});
+
+//   @override
+//   State<VendorAvailabilityPage> createState() => _VendorAvailabilityPageState();
+// }
+
+// class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
+//   List<dynamic> availabilityList = [];
+//   bool isLoading = true;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchAvailability();
+//   }
+
+//   Future<void> fetchAvailability() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     int? userId = prefs.getInt('user_id');
+
+//     if (userId == null) return;
+
+//     final url = Uri.parse(
+//       "http://192.168.1.3:8000/api/VendorAvailabilityView?user_id=$userId",
+//     );
+
+//     final response = await http.get(url);
+
+//     if (response.statusCode == 200) {
+//       final resData = json.decode(response.body);
+//       if (resData['status'] == true) {
+//         setState(() {
+//           availabilityList = resData['data'];
+//           isLoading = false;
+//         });
+//       } else {
+//         setState(() => isLoading = false);
+//       }
+//     } else {
+//       setState(() => isLoading = false);
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         // Header and Add Button
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               const Text(
+//                 'Your Availability',
+//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               ),
+//               ElevatedButton(
+//                 onPressed: () async {
+//                   final result = await Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (context) => const AddAvailabilityPage(),
+//                     ),
+//                   );
+//                   if (result == true) {
+//                     fetchAvailability(); // Refresh after add
+//                   }
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: Colors.black,
+//                   foregroundColor: Colors.white,
+//                   padding: const EdgeInsets.symmetric(
+//                     horizontal: 16,
+//                     vertical: 10,
+//                   ),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//                 child: const Text('Add'),
+//               ),
+//             ],
+//           ),
+//         ),
+
+//         // Table or Loading/Error Display
+//         isLoading
+//             ? const Center(child: CircularProgressIndicator())
+//             : availabilityList.isEmpty
+//             ? const Center(child: Text("No availability data found"))
+//             : Container(
+//               margin: const EdgeInsets.all(12),
+//               padding: const EdgeInsets.all(16),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(12),
+//                 boxShadow: const [
+//                   BoxShadow(
+//                     color: Colors.black12,
+//                     blurRadius: 4,
+//                     spreadRadius: 1,
+//                     offset: Offset(0, 2),
+//                   ),
+//                 ],
+//               ),
+//               child: SingleChildScrollView(
+//                 scrollDirection: Axis.horizontal,
+//                 child: DataTable(
+//                   headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
+//                   columnSpacing: 24,
+//                   columns: const [
+//                     DataColumn(
+//                       label: Text(
+//                         'Start Date',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'End Date',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'Place to Service',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'Action',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                   ],
+//                   rows:
+//                       availabilityList.map((item) {
+//                         return DataRow(
+//                           cells: [
+//                             DataCell(
+//                               Text(item['availability_startdate'].toString()),
+//                             ),
+//                             DataCell(
+//                               Text(item['availability_enddate'].toString()),
+//                             ),
+//                             DataCell(
+//                               SizedBox(
+//                                 width: 200,
+//                                 child: Text(
+//                                   item['placeToservice'].toString(),
+//                                   overflow: TextOverflow.ellipsis,
+//                                 ),
+//                               ),
+//                             ),
+//                             DataCell(
+//                               ElevatedButton(
+//                                 onPressed: () {
+//                                   // TODO: Add edit logic
+//                                 },
+//                                 style: ElevatedButton.styleFrom(
+//                                   backgroundColor: Colors.deepPurple,
+//                                   foregroundColor: Colors.white,
+//                                   padding: const EdgeInsets.symmetric(
+//                                     horizontal: 16,
+//                                     vertical: 8,
+//                                   ),
+//                                   shape: RoundedRectangleBorder(
+//                                     borderRadius: BorderRadius.circular(8),
+//                                   ),
+//                                 ),
+//                                 child: const Text('Edit'),
+//                               ),
+//                             ),
+//                           ],
+//                         );
+//                       }).toList(),
+//                 ),
+//               ),
+//             ),
+//       ],
+//     );
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'AddAvailabilityPage.dart';
+// import 'package:another_flushbar/flushbar.dart';
+
+// class VendorAvailabilityPage extends StatefulWidget {
+//   const VendorAvailabilityPage({super.key});
+
+//   @override
+//   State<VendorAvailabilityPage> createState() => _VendorAvailabilityPageState();
+// }
+
+// class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
+//   List<dynamic> availabilityList = [];
+//   bool isLoading = true;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchAvailability();
+//   }
+
+//   Future<void> fetchAvailability() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     int? userId = prefs.getInt('user_id');
+
+//     if (userId == null) return;
+
+//     final url = Uri.parse(
+//       "http://192.168.1.3:8000/api/VendorAvailabilityView?user_id=$userId",
+//     );
+
+//     final response = await http.get(url);
+
+//     if (response.statusCode == 200) {
+//       final resData = json.decode(response.body);
+//       if (resData['status'] == true) {
+//         setState(() {
+//           availabilityList = resData['data'];
+//           isLoading = false;
+//         });
+//       } else {
+//         setState(() => isLoading = false);
+//       }
+//     } else {
+//       setState(() => isLoading = false);
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         // Header and Add Button
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               const Text(
+//                 'Your Availability Date',
+//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               ),
+//               ElevatedButton(
+//                 onPressed: () async {
+//                   SharedPreferences prefs =
+//                       await SharedPreferences.getInstance();
+//                   int? userId = prefs.getInt('user_id');
+
+//                   if (userId == null) return;
+
+//                   final url = Uri.parse(
+//                     "http://192.168.1.3:8000/api/VendorAvailabilityView?user_id=$userId",
+//                   );
+
+//                   final response = await http.get(url);
+
+//                   if (response.statusCode == 200) {
+//                     final resData = json.decode(response.body);
+//                     final alreadyExists = resData['showAlert'] ?? false;
+
+//                     if (alreadyExists) {
+//                       Flushbar(
+//                         title: "Availability Already Added",
+//                         message:
+//                             "You have already added availability dates. If you want to change then please click the edit button.",
+//                         duration: const Duration(seconds: 4),
+//                         backgroundColor: Colors.orange.shade600,
+//                         flushbarPosition: FlushbarPosition.TOP,
+//                         icon: const Icon(
+//                           Icons.warning_amber_rounded,
+//                           color: Colors.white,
+//                         ),
+//                         margin: const EdgeInsets.all(8),
+//                         borderRadius: BorderRadius.circular(8),
+//                       ).show(context);
+//                     } else {
+//                       final result = await Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                           builder: (context) => const AddAvailabilityPage(),
+//                         ),
+//                       );
+//                       if (result == true) {
+//                         fetchAvailability(); // refresh
+//                       }
+//                     }
+//                   }
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: Colors.black,
+//                   foregroundColor: Colors.white,
+//                   padding: const EdgeInsets.symmetric(
+//                     horizontal: 16,
+//                     vertical: 10,
+//                   ),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//                 child: const Text('Add'),
+//               ),
+//             ],
+//           ),
+//         ),
+
+//         // Table or Loading/Error Display
+//         isLoading
+//             ? const Center(child: CircularProgressIndicator())
+//             : availabilityList.isEmpty
+//             ? const Center(child: Text("No availability data found"))
+//             : Container(
+//               margin: const EdgeInsets.all(12),
+//               padding: const EdgeInsets.all(16),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(12),
+//                 boxShadow: const [
+//                   BoxShadow(
+//                     color: Colors.black12,
+//                     blurRadius: 4,
+//                     spreadRadius: 1,
+//                     offset: Offset(0, 2),
+//                   ),
+//                 ],
+//               ),
+//               child: SingleChildScrollView(
+//                 scrollDirection: Axis.horizontal,
+//                 child: DataTable(
+//                   headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
+//                   columnSpacing: 24,
+//                   columns: const [
+//                     DataColumn(
+//                       label: Text(
+//                         'Start Date',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'End Date',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'Place to Service',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'Action',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                   ],
+//                   rows:
+//                       availabilityList.map((item) {
+//                         return DataRow(
+//                           cells: [
+//                             DataCell(
+//                               Text(item['availability_startdate'].toString()),
+//                             ),
+//                             DataCell(
+//                               Text(item['availability_enddate'].toString()),
+//                             ),
+//                             DataCell(
+//                               SizedBox(
+//                                 width: 200,
+//                                 child: Text(
+//                                   item['placeToservice'].toString(),
+//                                   overflow: TextOverflow.ellipsis,
+//                                 ),
+//                               ),
+//                             ),
+//                             DataCell(
+//                               ElevatedButton(
+//                                 onPressed: () {
+//                                   // TODO: Add edit logic here
+//                                 },
+//                                 style: ElevatedButton.styleFrom(
+//                                   backgroundColor: Colors.deepPurple,
+//                                   foregroundColor: Colors.white,
+//                                   padding: const EdgeInsets.symmetric(
+//                                     horizontal: 16,
+//                                     vertical: 8,
+//                                   ),
+//                                   shape: RoundedRectangleBorder(
+//                                     borderRadius: BorderRadius.circular(8),
+//                                   ),
+//                                 ),
+//                                 child: const Text('Edit'),
+//                               ),
+//                             ),
+//                           ],
+//                         );
+//                       }).toList(),
+//                 ),
+//               ),
+//             ),
+//       ],
+//     );
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'AddAvailabilityPage.dart';
+// import 'package:another_flushbar/flushbar.dart';
+
+// class VendorAvailabilityPage extends StatefulWidget {
+//   const VendorAvailabilityPage({super.key});
+
+//   @override
+//   State<VendorAvailabilityPage> createState() => _VendorAvailabilityPageState();
+// }
+
+// class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
+//   List<dynamic> availabilityList = [];
+//   bool isLoading = true;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchAvailability();
+//   }
+
+//   Future<void> fetchAvailability() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     int? userId = prefs.getInt('user_id');
+
+//     if (userId == null) return;
+
+//     final url = Uri.parse(
+//       "http://192.168.1.3:8000/api/VendorAvailabilityView?user_id=$userId",
+//     );
+
+//     final response = await http.get(url);
+
+//     if (response.statusCode == 200) {
+//       final resData = json.decode(response.body);
+//       if (resData['status'] == true) {
+//         setState(() {
+//           availabilityList = resData['data'];
+//           isLoading = false;
+//         });
+//       } else {
+//         setState(() => isLoading = false);
+//       }
+//     } else {
+//       setState(() => isLoading = false);
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         // Header and Add Button
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               const Text(
+//                 'Your Availability Date',
+//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               ),
+//               ElevatedButton(
+//                 onPressed: () async {
+//                   SharedPreferences prefs =
+//                       await SharedPreferences.getInstance();
+//                   int? userId = prefs.getInt('user_id');
+
+//                   if (userId == null) return;
+
+//                   final url = Uri.parse(
+//                     "http://192.168.1.3:8000/api/VendorAvailabilityView?user_id=$userId",
+//                   );
+
+//                   final response = await http.get(url);
+
+//                   if (response.statusCode == 200) {
+//                     final resData = json.decode(response.body);
+//                     final alreadyExists = resData['showAlert'] ?? false;
+
+//                     if (alreadyExists) {
+//                       Flushbar(
+//                         title: "Already Added",
+//                         message:
+//                             "You have already added availability. Please edit it if needed.",
+//                         duration: const Duration(seconds: 4),
+//                         backgroundColor: Colors.orange,
+//                         flushbarPosition: FlushbarPosition.TOP,
+//                         icon: const Icon(Icons.info, color: Colors.white),
+//                         margin: const EdgeInsets.all(8),
+//                         borderRadius: BorderRadius.circular(8),
+//                       ).show(context);
+//                     } else {
+//                       final result = await Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                           builder: (context) => const AddAvailabilityPage(),
+//                         ),
+//                       );
+//                       if (result == true) {
+//                         fetchAvailability();
+//                       }
+//                     }
+//                   }
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: Colors.black,
+//                   foregroundColor: Colors.white,
+//                   padding: const EdgeInsets.symmetric(
+//                     horizontal: 16,
+//                     vertical: 10,
+//                   ),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//                 child: const Text('Add'),
+//               ),
+//             ],
+//           ),
+//         ),
+
+//         // Table or Loading/Error Display
+//         isLoading
+//             ? const Center(child: CircularProgressIndicator())
+//             : availabilityList.isEmpty
+//             ? const Center(child: Text("No availability data found"))
+//             : Container(
+//               margin: const EdgeInsets.all(12),
+//               padding: const EdgeInsets.all(16),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(12),
+//                 boxShadow: const [
+//                   BoxShadow(
+//                     color: Colors.black12,
+//                     blurRadius: 4,
+//                     spreadRadius: 1,
+//                     offset: Offset(0, 2),
+//                   ),
+//                 ],
+//               ),
+//               child: SingleChildScrollView(
+//                 scrollDirection: Axis.horizontal,
+//                 child: DataTable(
+//                   headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
+//                   columnSpacing: 24,
+//                   columns: const [
+
+//                     DataColumn(
+//                       label: Text(
+//                         'Start Date',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'End Date',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'Place to Service',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     DataColumn(
+//                       label: Text(
+//                         'Action',
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                   ],
+//                   rows:
+//                       availabilityList.map((item) {
+//                         return DataRow(
+//                           cells: [
+//                             DataCell(
+//                               Text(item['availability_startdate'].toString()),
+//                             ),
+//                             DataCell(
+//                               Text(item['availability_enddate'].toString()),
+//                             ),
+//                             DataCell(
+//                               SizedBox(
+//                                 width: 200,
+//                                 child: Text(
+//                                   item['placeToservice'].toString(),
+//                                   overflow: TextOverflow.ellipsis,
+//                                 ),
+//                               ),
+//                             ),
+//                             DataCell(
+//                               ElevatedButton(
+//                                 onPressed: () async {
+//                                   final result = await Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                       builder:
+//                                           (_) => EditAvailabilityPage(
+//                                             startDate:
+//                                                 item['availability_startdate'],
+//                                             endDate:
+//                                                 item['availability_enddate'],
+//                                             place:
+//                                                 item['placeToservice']
+//                                                     .toString(),
+//                                           ),
+//                                     ),
+//                                   );
+//                                   if (result == true) {
+//                                     fetchAvailability();
+//                                     Flushbar(
+//                                       title: "Success",
+//                                       message:
+//                                           "Vendor availability updated successfully!",
+//                                       duration: const Duration(seconds: 3),
+//                                       backgroundColor: Colors.green,
+//                                       flushbarPosition: FlushbarPosition.TOP,
+//                                       margin: const EdgeInsets.all(8),
+//                                       borderRadius: BorderRadius.circular(8),
+//                                       icon: const Icon(
+//                                         Icons.check_circle,
+//                                         color: Colors.white,
+//                                       ),
+//                                     ).show(context);
+//                                   }
+//                                 },
+//                                 style: ElevatedButton.styleFrom(
+//                                   backgroundColor: Colors.deepPurple,
+//                                   foregroundColor: Colors.white,
+//                                   padding: const EdgeInsets.symmetric(
+//                                     horizontal: 16,
+//                                     vertical: 8,
+//                                   ),
+//                                   shape: RoundedRectangleBorder(
+//                                     borderRadius: BorderRadius.circular(8),
+//                                   ),
+//                                 ),
+//                                 child: const Text('Edit'),
+//                               ),
+//                             ),
+//                           ],
+//                         );
+//                       }).toList(),
+//                 ),
+//               ),
+//             ),
+//       ],
+//     );
+//   }
+// }
+
+// class EditAvailabilityPage extends StatefulWidget {
+//   final String startDate;
+//   final String endDate;
+//   final String place;
+
+//   const EditAvailabilityPage({
+//     super.key,
+//     required this.startDate,
+//     required this.endDate,
+//     required this.place,
+//   });
+
+//   @override
+//   State<EditAvailabilityPage> createState() => _EditAvailabilityPageState();
+// }
+
+// class _EditAvailabilityPageState extends State<EditAvailabilityPage> {
+//   late TextEditingController startDateController;
+//   late TextEditingController endDateController;
+//   late TextEditingController placeController;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     startDateController = TextEditingController(text: widget.startDate);
+//     endDateController = TextEditingController(text: widget.endDate);
+//     placeController = TextEditingController(text: widget.place);
+//   }
+
+//   Future<void> updateAvailability() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     int? userId = prefs.getInt('user_id');
+
+//     if (userId == null) return;
+
+//     final url = Uri.parse(
+//       "http://192.168.1.3:8000/api/UpdateVendorAvailability",
+//     );
+
+//     final response = await http.post(
+//       url,
+//       body: {
+//         'user_id': userId.toString(),
+//         'startdate': startDateController.text,
+//         'enddate': endDateController.text,
+//         'placetoservice': placeController.text,
+//       },
+//     );
+
+//     final resData = json.decode(response.body);
+//     if (resData['status'] == true) {
+//       Navigator.pop(context, true);
+//     } else {
+//       Flushbar(
+//         title: "Update Failed",
+//         message: resData['message'] ?? "Something went wrong.",
+//         duration: const Duration(seconds: 3),
+//         backgroundColor: Colors.red,
+//         flushbarPosition: FlushbarPosition.TOP,
+//         icon: const Icon(Icons.error, color: Colors.white),
+//         margin: const EdgeInsets.all(8),
+//         borderRadius: BorderRadius.circular(8),
+//       ).show(context);
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFF6F6F6),
+//       appBar: AppBar(
+//         title: const Text('Edit Your Availability'),
+//         backgroundColor: Colors.deepPurple,
+//         foregroundColor: Colors.white,
+//         elevation: 0,
+//       ),
+//       body: SingleChildScrollView(
+//         padding: const EdgeInsets.all(20),
+//         child: Center(
+//           child: Container(
+//             padding: const EdgeInsets.all(20),
+//             constraints: const BoxConstraints(maxWidth: 500),
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: BorderRadius.circular(16),
+//               boxShadow: const [
+//                 BoxShadow(
+//                   color: Colors.black12,
+//                   blurRadius: 10,
+//                   spreadRadius: 2,
+//                   offset: Offset(0, 4),
+//                 ),
+//               ],
+//             ),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 const Text(
+//                   "",
+//                   style: TextStyle(
+//                     fontSize: 22,
+//                     fontWeight: FontWeight.bold,
+//                     color: Colors.deepPurple,
+//                   ),
+//                 ),
+//                 // const SizedBox(height: 24),
+
+//                 // Start Date
+//                 TextField(
+//                   controller: startDateController,
+//                   decoration: InputDecoration(
+//                     labelText: 'Start Date',
+//                     prefixIcon: const Icon(Icons.calendar_today_outlined),
+//                     border: OutlineInputBorder(
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(height: 20),
+
+//                 // End Date
+//                 TextField(
+//                   controller: endDateController,
+//                   decoration: InputDecoration(
+//                     labelText: 'End Date',
+//                     prefixIcon: const Icon(Icons.calendar_today_outlined),
+//                     border: OutlineInputBorder(
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(height: 20),
+
+//                 // Place
+//                 TextField(
+//                   controller: placeController,
+//                   decoration: InputDecoration(
+//                     labelText: 'Place to Service',
+//                     // prefixIcon: const Icon(Icons.location_on),
+//                     border: OutlineInputBorder(
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                   ),
+//                   maxLines: 2,
+//                 ),
+//                 const SizedBox(height: 30),
+
+//                 // Save Button
+//                 SizedBox(
+//                   width: double.infinity,
+//                   child: ElevatedButton(
+//                     onPressed: updateAvailability,
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: Colors.deepPurple,
+//                       foregroundColor: Colors.white,
+//                       padding: const EdgeInsets.symmetric(
+//                         vertical: 14,
+//                         horizontal: 20,
+//                       ),
+//                       textStyle: const TextStyle(
+//                         fontSize: 16,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(12),
+//                       ),
+//                     ),
+//                     child: const Text('Save'),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:another_flushbar/flushbar.dart';
+import '../vendor/AddAvailabilityPage.dart';
 
 class VendorAvailabilityPage extends StatefulWidget {
   const VendorAvailabilityPage({super.key});
@@ -23,19 +881,13 @@ class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
   Future<void> fetchAvailability() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? userId = prefs.getInt('user_id');
-
-    print("User ID from SharedPreferences: $userId"); // ✅ debug
-
     if (userId == null) return;
 
     final url = Uri.parse(
-      "http://192.168.1.6:8000/api/VendorAvailabilityView?user_id=$userId",
+      "http://192.168.1.3:8000/api/VendorAvailabilityView?user_id=$userId",
     );
 
     final response = await http.get(url);
-
-    // print("API Response Code: ${response.statusCode}");
-    // print("API Body: ${response.body}");
 
     if (response.statusCode == 200) {
       final resData = json.decode(response.body);
@@ -45,43 +897,454 @@ class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
           isLoading = false;
         });
       } else {
-        setState(() {
-          isLoading = false;
-        });
+        setState(() => isLoading = false);
       }
     } else {
       setState(() => isLoading = false);
     }
   }
 
+  Future<void> toggleStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt('user_id');
+    if (userId == null) return;
+
+    final url = Uri.parse(
+      "http://192.168.1.3:8000/api/VendorAvailability/status?user_id=$userId",
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final resData = json.decode(response.body);
+      if (resData['status'] == true) {
+        await fetchAvailability();
+        Flushbar(
+          title: "Status Changed",
+          message: resData['message'],
+          duration: const Duration(seconds: 2),
+          backgroundColor: Colors.blue,
+          flushbarPosition: FlushbarPosition.TOP,
+          margin: const EdgeInsets.all(8),
+          borderRadius: BorderRadius.circular(8),
+          icon: const Icon(Icons.info_outline, color: Colors.white),
+        ).show(context);
+      } else {
+        Flushbar(
+          title: "Error",
+          message: resData['message'],
+          duration: const Duration(seconds: 2),
+          backgroundColor: Colors.red,
+          flushbarPosition: FlushbarPosition.TOP,
+          margin: const EdgeInsets.all(8),
+          borderRadius: BorderRadius.circular(8),
+          icon: const Icon(Icons.error_outline, color: Colors.white),
+        ).show(context);
+      }
+    } else {
+      Flushbar(
+        title: "Failed",
+        message: "Something went wrong while toggling status.",
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.red,
+        flushbarPosition: FlushbarPosition.TOP,
+        margin: const EdgeInsets.all(8),
+        borderRadius: BorderRadius.circular(8),
+        icon: const Icon(Icons.warning_amber_rounded, color: Colors.white),
+      ).show(context);
+    }
+  }
+
+  bool checkAlreadyExists() {
+    final today = DateTime.now();
+
+    for (var item in availabilityList) {
+      if (item['status'].toString() == '1') {
+        final startDate = DateTime.tryParse(item['availability_startdate']);
+        final endDate = DateTime.tryParse(item['availability_enddate']);
+
+        if (startDate != null && endDate != null) {
+          if (!today.isBefore(startDate) && !today.isAfter(endDate)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Header with Add Button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Your Availability Date',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  bool alreadyExists = checkAlreadyExists();
+
+                  if (alreadyExists) {
+                    Flushbar(
+                      title: "Already Added",
+                      message:
+                          "You have already added availability. Please edit it if needed.",
+                      duration: const Duration(seconds: 4),
+                      backgroundColor: Colors.orange,
+                      flushbarPosition: FlushbarPosition.TOP,
+                      icon: const Icon(Icons.info, color: Colors.white),
+                      margin: const EdgeInsets.all(8),
+                      borderRadius: BorderRadius.circular(8),
+                    ).show(context);
+                  } else {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddAvailabilityPage(),
+                      ),
+                    );
+                    if (result == true) {
+                      fetchAvailability();
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text('Add'),
+              ),
+            ],
+          ),
+        ),
+
+        // Data Table
+        isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : availabilityList.isEmpty
+            ? const Center(child: Text("No availability data found"))
+            : Container(
+              margin: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    spreadRadius: 1,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
+                  columnSpacing: 24,
+                  columns: const [
+                    DataColumn(
+                      label: Text(
+                        'Action',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Status',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Start Date',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'End Date',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Place to Service',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                  rows:
+                      availabilityList.map((item) {
+                        final status = item['status'].toString();
+                        final isAvailable = status == '1';
+
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => EditAvailabilityPage(
+                                            startDate:
+                                                item['availability_startdate'],
+                                            endDate:
+                                                item['availability_enddate'],
+                                            place:
+                                                item['placeToservice']
+                                                    .toString(),
+                                          ),
+                                    ),
+                                  );
+                                  if (result == true) {
+                                    fetchAvailability();
+                                    Flushbar(
+                                      title: "Success",
+                                      message:
+                                          "Vendor availability updated successfully!",
+                                      duration: const Duration(seconds: 3),
+                                      backgroundColor: Colors.green,
+                                      flushbarPosition: FlushbarPosition.TOP,
+                                      margin: const EdgeInsets.all(8),
+                                      borderRadius: BorderRadius.circular(8),
+                                      icon: const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.white,
+                                      ),
+                                    ).show(context);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepPurple,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Edit'),
+                              ),
+                            ),
+                            DataCell(
+                              InkWell(
+                                onTap: () async {
+                                  await toggleStatus();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isAvailable
+                                            ? Colors.green
+                                            : Colors.amber,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    isAvailable ? 'Available' : 'Unavailable',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Text(item['availability_startdate'].toString()),
+                            ),
+                            DataCell(
+                              Text(item['availability_enddate'].toString()),
+                            ),
+                            DataCell(
+                              SizedBox(
+                                width: 200,
+                                child: Text(
+                                  item['placeToservice'].toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                ),
+              ),
+            ),
+      ],
+    );
+  }
+}
+
+//  Edit Page Widget Below
+
+class EditAvailabilityPage extends StatefulWidget {
+  final String startDate;
+  final String endDate;
+  final String place;
+
+  const EditAvailabilityPage({
+    super.key,
+    required this.startDate,
+    required this.endDate,
+    required this.place,
+  });
+
+  @override
+  State<EditAvailabilityPage> createState() => _EditAvailabilityPageState();
+}
+
+class _EditAvailabilityPageState extends State<EditAvailabilityPage> {
+  late TextEditingController startDateController;
+  late TextEditingController endDateController;
+  late TextEditingController placeController;
+
+  @override
+  void initState() {
+    super.initState();
+    startDateController = TextEditingController(text: widget.startDate);
+    endDateController = TextEditingController(text: widget.endDate);
+    placeController = TextEditingController(text: widget.place);
+  }
+
+  Future<void> updateAvailability() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt('user_id');
+    if (userId == null) return;
+
+    final url = Uri.parse(
+      "http://192.168.1.3:8000/api/UpdateVendorAvailability",
+    );
+
+    final response = await http.post(
+      url,
+      body: {
+        'user_id': userId.toString(),
+        'startdate': startDateController.text,
+        'enddate': endDateController.text,
+        'placetoservice': placeController.text,
+      },
+    );
+
+    final resData = json.decode(response.body);
+    if (resData['status'] == true) {
+      Navigator.pop(context, true);
+    } else {
+      Flushbar(
+        title: "Update Failed",
+        message: resData['message'] ?? "Something went wrong.",
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.red,
+        flushbarPosition: FlushbarPosition.TOP,
+        icon: const Icon(Icons.error, color: Colors.white),
+        margin: const EdgeInsets.all(8),
+        borderRadius: BorderRadius.circular(8),
+      ).show(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Vendor Availability')),
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : availabilityList.isEmpty
-              ? const Center(child: Text("No availability data found"))
-              : ListView.builder(
-                itemCount: availabilityList.length,
-                itemBuilder: (context, index) {
-                  final item = availabilityList[index];
-                  return Card(
-                    margin: const EdgeInsets.all(12),
-                    child: ListTile(
-                      title: Text("Place: ${item['placeToservice']}"),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Start: ${item['availability_startdate']}"),
-                          Text("End: ${item['availability_enddate']}"),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+      appBar: AppBar(
+        title: const Text('Edit Your Availability'),
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          constraints: const BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                spreadRadius: 2,
+                offset: Offset(0, 4),
               ),
+            ],
+          ),
+          child: Column(
+            children: [
+              TextField(
+                controller: startDateController,
+                decoration: InputDecoration(
+                  labelText: 'Start Date',
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: endDateController,
+                decoration: InputDecoration(
+                  labelText: 'End Date',
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: placeController,
+                decoration: InputDecoration(
+                  labelText: 'Place to Service',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: updateAvailability,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Save'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

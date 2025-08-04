@@ -124,7 +124,7 @@
 
 //     try {
 //       final response = await http.post(
-//         Uri.parse("http://192.168.1.4:8000/api/regularbooking"),
+//         Uri.parse("http://192.168.1.3:8000/api/regularbooking"),
 //         headers: {"Content-Type": "application/json"},
 //         body: jsonEncode(fullData),
 //       );
@@ -450,7 +450,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.6:8000/api/regularbooking"),
+        Uri.parse("http://192.168.1.3:8000/api/regularbooking"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(fullData),
       );
