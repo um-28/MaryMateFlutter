@@ -1,3 +1,272 @@
+// import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import '../screens/loginpage.dart';
+// import 'VendorAvailabilityPage.dart';
+// import '../vendor/service_data_page.dart'; // make sure this is the correct path
+
+// class VendorPanelPage extends StatefulWidget {
+//   const VendorPanelPage({super.key});
+
+//   @override
+//   State<VendorPanelPage> createState() => _VendorPanelPageState();
+// }
+
+// class _VendorPanelPageState extends State<VendorPanelPage> {
+//   String userName = '';
+//   String userEmail = '';
+//   bool showAvailability = false;
+//   bool showServices = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     loadVendorDetails();
+//   }
+
+//   Future<void> loadVendorDetails() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     setState(() {
+//       userName = prefs.getString('user_name') ?? '';
+//       userEmail = prefs.getString('user_email') ?? '';
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFF6F6F6),
+//       appBar: AppBar(
+//         title: const Text('Vendor Dashboard'),
+//         backgroundColor: Colors.white,
+//         elevation: 4,
+//       ),
+//       drawer: Drawer(
+//         child: Container(
+//           color: Colors.white,
+//           child: Column(
+//             children: [
+//               UserAccountsDrawerHeader(
+//                 decoration: const BoxDecoration(color: Colors.deepPurple),
+//                 accountName: Text(userName),
+//                 accountEmail: Text(userEmail),
+//                 currentAccountPicture: CircleAvatar(
+//                   backgroundColor: Colors.white,
+//                   child: Text(
+//                     userName.isNotEmpty ? userName[0].toUpperCase() : '?',
+//                     style: const TextStyle(
+//                       fontSize: 28,
+//                       color: Colors.deepPurple,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//               const Divider(),
+//               Padding(
+//                 padding: const EdgeInsets.symmetric(
+//                   horizontal: 16.0,
+//                   vertical: 6,
+//                 ),
+//                 child: Align(
+//                   alignment: Alignment.centerLeft,
+//                   child: Text(
+//                     'Auth',
+//                     style: TextStyle(
+//                       fontSize: 14,
+//                       color: Colors.grey.shade700,
+//                       fontWeight: FontWeight.w600,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//               buildDrawerItem(
+//                 icon: Icons.person,
+//                 title: 'Manage Profile',
+//                 onTap: () {},
+//               ),
+//               buildDrawerItem(
+//                 icon: Icons.logout,
+//                 title: 'Logout',
+//                 onTap: () async {
+//                   SharedPreferences prefs =
+//                       await SharedPreferences.getInstance();
+//                   await prefs.clear();
+//                   if (context.mounted) {
+//                     Navigator.pushReplacement(
+//                       context,
+//                       MaterialPageRoute(
+//                         builder: (context) => const LoginPage(),
+//                       ),
+//                     );
+//                   }
+//                 },
+//               ),
+//               const SizedBox(height: 20),
+//             ],
+//           ),
+//         ),
+//       ),
+//       body: SingleChildScrollView(
+//         child: Column(
+//           children: [
+//             // Welcome Card
+//             // Card(
+//             //   elevation: 4,
+//             //   shape: RoundedRectangleBorder(
+//             //     borderRadius: BorderRadius.circular(16),
+//             //   ),
+//             //   margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+//             //   child: Container(
+//             //     padding: const EdgeInsets.all(24),
+//             //     width: double.infinity,
+//             //     decoration: BoxDecoration(
+//             //       borderRadius: BorderRadius.circular(16),
+//             //     ),
+//             //     child: const Text(
+//             //       'Welcome to the Vendor Dashboard!',
+//             //       style: TextStyle(
+//             //         fontSize: 22,
+//             //         fontWeight: FontWeight.bold,
+//             //         color: Color.fromARGB(255, 14, 13, 13),
+//             //       ),
+//             //       textAlign: TextAlign.center,
+//             //     ),
+//             //   ),
+//             // ),
+
+//             // Components heading
+//             Container(
+//               padding: const EdgeInsets.only(left: 16),
+//               alignment: Alignment.centerLeft,
+//               child: const Text(
+//                 'Components',
+//                 style: TextStyle(
+//                   fontSize: 18,
+//                   fontWeight: FontWeight.w600,
+//                   color: Colors.black87,
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 10),
+
+//             // Grid of cards
+//             Padding(
+//               padding: const EdgeInsets.symmetric(horizontal: 12),
+//               child: GridView.count(
+//                 crossAxisCount: 3,
+//                 crossAxisSpacing: 12,
+//                 mainAxisSpacing: 12,
+//                 shrinkWrap: true,
+//                 physics: const NeverScrollableScrollPhysics(),
+//                 children: [
+//                   serviceCard(
+//                     icon: Icons.event_available,
+//                     title: 'Availability',
+//                     onTap: () {
+//                       setState(() {
+//                         showAvailability = !showAvailability;
+//                       });
+//                     },
+//                   ),
+//                   serviceCard(
+//                     icon: Icons.design_services,
+//                     title: 'Services',
+//                     onTap: () {
+//                       setState(() {
+//                         showServices = !showServices;
+//                       });
+//                     },
+//                   ),
+//                   serviceCard(icon: Icons.card_giftcard, title: 'Packages'),
+//                   serviceCard(icon: Icons.book_online, title: 'Bookings'),
+//                   serviceCard(icon: Icons.reviews, title: 'Reviews'),
+//                   serviceCard(icon: Icons.analytics, title: 'Reports'),
+//                 ],
+//               ),
+//             ),
+
+//             if (showAvailability)
+//               Padding(
+//                 padding: const EdgeInsets.symmetric(
+//                   horizontal: 12,
+//                   vertical: 10,
+//                 ),
+//                 child: SizedBox(
+//                   width: double.infinity,
+//                   child: VendorAvailabilityPage(),
+//                 ),
+//               ),
+
+//             if (showServices)
+//               Padding(
+//                 padding: const EdgeInsets.symmetric(
+//                   horizontal: 12,
+//                   vertical: 10,
+//                 ),
+//                 child: SizedBox(
+//                   width: double.infinity,
+//                   child: ServiceDataPage(),
+//                 ),
+//               ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget buildDrawerItem({
+//     required IconData icon,
+//     required String title,
+//     required VoidCallback onTap,
+//   }) {
+//     return ListTile(
+//       leading: Icon(icon, color: Colors.deepPurple),
+//       title: Text(title, style: const TextStyle(fontSize: 16)),
+//       onTap: onTap,
+//     );
+//   }
+
+//   Widget serviceCard({
+//     required IconData icon,
+//     required String title,
+//     VoidCallback? onTap,
+//   }) {
+//     return Container(
+//       width: 100,
+//       margin: const EdgeInsets.only(left: 12, right: 4, top: 4, bottom: 4),
+//       child: Card(
+//         color: Colors.white,
+//         elevation: 2.5,
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+//         shadowColor: Colors.grey.shade300,
+//         child: InkWell(
+//           onTap: onTap,
+//           borderRadius: BorderRadius.circular(14),
+//           child: Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Icon(icon, size: 30, color: Colors.deepPurple),
+//                 const SizedBox(height: 8),
+//                 Text(
+//                   title,
+//                   style: const TextStyle(
+//                     fontSize: 13,
+//                     fontWeight: FontWeight.w500,
+//                     color: Colors.black87,
+//                   ),
+//                   textAlign: TextAlign.center,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/loginpage.dart';
@@ -109,32 +378,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Welcome Card
-            // Card(
-            //   elevation: 4,
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(16),
-            //   ),
-            //   margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-            //   child: Container(
-            //     padding: const EdgeInsets.all(24),
-            //     width: double.infinity,
-            //     decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(16),
-            //     ),
-            //     child: const Text(
-            //       'Welcome to the Vendor Dashboard!',
-            //       style: TextStyle(
-            //         fontSize: 22,
-            //         fontWeight: FontWeight.bold,
-            //         color: Color.fromARGB(255, 14, 13, 13),
-            //       ),
-            //       textAlign: TextAlign.center,
-            //     ),
-            //   ),
-            // ),
-
-            // Components heading
+            const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.only(left: 16),
               alignment: Alignment.centerLeft,
@@ -164,7 +408,8 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                     title: 'Availability',
                     onTap: () {
                       setState(() {
-                        showAvailability = !showAvailability;
+                        showAvailability = true;
+                        showServices = false;
                       });
                     },
                   ),
@@ -173,7 +418,8 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                     title: 'Services',
                     onTap: () {
                       setState(() {
-                        showServices = !showServices;
+                        showServices = true;
+                        showAvailability = false;
                       });
                     },
                   ),
@@ -197,13 +443,45 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                 ),
               ),
 
+            // if (showServices)
+            //   Padding(
+            //     padding: const EdgeInsets.symmetric(
+            //       horizontal: 16,
+            //       vertical: 12,
+            //     ),
+            //     child: SizedBox(
+            //       width: double.infinity,
+            //       child: ServiceDataPage(),
+            //     ),
+            //   ),
+
+            // if (showServices)
+            //   Padding(
+            //     padding: const EdgeInsets.symmetric(
+            //       horizontal: 16,
+            //       vertical: 12,
+            //     ),
+            //     child: SizedBox(
+            //       width: double.infinity,
+            //       child: SingleChildScrollView(
+            //         scrollDirection: Axis.horizontal,
+            //         child: ConstrainedBox(
+            //           constraints: const BoxConstraints(
+            //             minWidth: 1200,
+            //           ), // Adjust as needed
+            //           child: ServiceDataPage(),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
             if (showServices)
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
+                  horizontal: 16,
+                  vertical: 12,
                 ),
                 child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
                   width: double.infinity,
                   child: ServiceDataPage(),
                 ),
