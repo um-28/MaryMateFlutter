@@ -866,10 +866,11 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
   @override
   void initState() {
     super.initState();
-    fetchServicesFromApi();
+    // fetchServicesFromApi();
+    fetchServiceData();
   }
 
-  Future<void> fetchServicesFromApi() async {
+  Future<void> fetchServiceData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? userId = prefs.getInt('user_id');
     if (userId == null) return;
@@ -1021,12 +1022,22 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
             children: [
               ElevatedButton(
                 onPressed: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const AddServiceDataPage(),
+                  //   ),
+                  // );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const AddServiceDataPage(),
                     ),
-                  );
+                  ).then((value) {
+                    if (value == true) {
+                      fetchServiceData(); // your function to reload data
+                    }
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -1152,20 +1163,16 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                                                             item['price']
                                                                 .toString(),
                                                         existingImages:
-                                                            (item['images'] ??
-                                                                    '')
-                                                                .toString()
-                                                                .split(',')
-                                                                .where(
-                                                                  (img) =>
-                                                                      img
-                                                                          .trim()
-                                                                          .isNotEmpty,
-                                                                )
-                                                                .toList(),
+                                                            (item['images']
+                                                                    as String)
+                                                                .split(','),
                                                       ),
                                                 ),
-                                              );
+                                              ).then((value) {
+                                                if (value == true) {
+                                                  fetchServiceData(); // ✅ Reload updated table
+                                                }
+                                              });
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
