@@ -1131,7 +1131,42 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                                       Row(
                                         children: [
                                           ElevatedButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (
+                                                        context,
+                                                      ) => EditServiceDataPage(
+                                                        serviceId:
+                                                            item['service_id']
+                                                                .toString(),
+                                                        serviceName:
+                                                            item['service_type'] ??
+                                                            '',
+                                                        description:
+                                                            item['description'] ??
+                                                            '',
+                                                        price:
+                                                            item['price']
+                                                                .toString(),
+                                                        existingImages:
+                                                            (item['images'] ??
+                                                                    '')
+                                                                .toString()
+                                                                .split(',')
+                                                                .where(
+                                                                  (img) =>
+                                                                      img
+                                                                          .trim()
+                                                                          .isNotEmpty,
+                                                                )
+                                                                .toList(),
+                                                      ),
+                                                ),
+                                              );
+                                            },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
                                                   Colors.deepPurple,
@@ -1148,6 +1183,7 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                                             ),
                                             child: const Text("Edit"),
                                           ),
+
                                           const SizedBox(width: 6),
                                           ElevatedButton(
                                             onPressed: () {},
