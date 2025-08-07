@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:another_flushbar/flushbar.dart';
-// import 'package:image_picker/image_picker.dart';
 
-class AddServiceDataPage extends StatefulWidget {
-  const AddServiceDataPage({super.key});
+class AddPackageDataPage extends StatefulWidget {
+  const AddPackageDataPage({super.key});
 
   @override
-  State<AddServiceDataPage> createState() => _AddServiceDataPageState();
+  State<AddPackageDataPage> createState() => _AddPackageDataPageState();
 }
 
-class _AddServiceDataPageState extends State<AddServiceDataPage> {
+class _AddPackageDataPageState extends State<AddPackageDataPage> {
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController serviceTypeController = TextEditingController();
   final TextEditingController descController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   List<PlatformFile> _selectedFiles = [];
@@ -41,7 +41,7 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
     }
   }
 
-  Future<void> submitService() async {
+  Future<void> submitPackage() async {
     setState(() {
       isLoading = true;
     });
@@ -58,10 +58,11 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
     }
 
     try {
-      var uri = Uri.parse('http://192.168.1.9:8000/api/ServiceStore');
+      var uri = Uri.parse('http://192.168.1.9:8000/api/PackageStore');
       var request = http.MultipartRequest('POST', uri);
       request.fields['user_id'] = userId;
-      request.fields['service_name'] = nameController.text;
+      request.fields['name'] = nameController.text;
+      request.fields['service_types'] = serviceTypeController.text;
       request.fields['description'] = descController.text;
       request.fields['price'] = priceController.text;
 
@@ -86,9 +87,9 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
       final responseData = await response.stream.bytesToString();
 
       if (response.statusCode == 201) {
-        showFlushMessage("Service added successfully", success: true);
+        showFlushMessage("Package added successfully", success: true);
         await Future.delayed(const Duration(seconds: 2));
-        if (mounted) Navigator.pop(context, true); // ✅ trigger reload
+        if (mounted) Navigator.pop(context, true); // for refresh
       } else {
         final error = json.decode(responseData);
         showFlushMessage("Failed: ${error['message']}");
@@ -118,7 +119,7 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: AppBar(
-        title: const Text("Add Service"),
+        title: const Text("Add Package"),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
@@ -145,7 +146,7 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
               children: [
                 const Center(
                   child: Text(
-                    "Add Your Service",
+                    "Add Package",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -155,15 +156,28 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
                 ),
                 const SizedBox(height: 24),
 
-                // Service Name
+                // Package Name
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(
-                    labelText: "Service Name",
+                    labelText: "Package Name",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    prefixIcon: const Icon(Icons.design_services),
+                    prefixIcon: const Icon(Icons.inventory),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Service Types
+                TextField(
+                  controller: serviceTypeController,
+                  decoration: InputDecoration(
+                    labelText: "Service Types",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    prefixIcon: const Icon(Icons.category),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -206,7 +220,6 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
                     foregroundColor: Colors.white,
                   ),
                 ),
-
                 const SizedBox(height: 12),
 
                 // Image Preview
@@ -244,7 +257,7 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: isLoading ? null : submitService,
+                    onPressed: isLoading ? null : submitPackage,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       foregroundColor: Colors.white,
@@ -262,7 +275,7 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
                             ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                            : const Text("Submit Service"),
+                            : const Text("Submit"),
                   ),
                 ),
               ],
@@ -274,29 +287,31 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
   }
 }
 
-
-class EditServiceDataPage extends StatefulWidget {
-  final String serviceId;
-  final String serviceName;
+class EditPackageDataPage extends StatefulWidget {
+  final String packageId;
+  final String packageName;
+  final String serviceTypes;
   final String description;
   final String price;
   final List<String> existingImages;
 
-  const EditServiceDataPage({
+  const EditPackageDataPage({
     super.key,
-    required this.serviceId,
-    required this.serviceName,
+    required this.packageId,
+    required this.packageName,
+    required this.serviceTypes,
     required this.description,
     required this.price,
     required this.existingImages,
   });
 
   @override
-  State<EditServiceDataPage> createState() => _EditServiceDataPageState();
+  State<EditPackageDataPage> createState() => _EditPackageDataPageState();
 }
 
-class _EditServiceDataPageState extends State<EditServiceDataPage> {
+class _EditPackageDataPageState extends State<EditPackageDataPage> {
   late TextEditingController nameController;
+  late TextEditingController serviceTypeController;
   late TextEditingController descriptionController;
   late TextEditingController priceController;
 
@@ -307,7 +322,8 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: widget.serviceName);
+    nameController = TextEditingController(text: widget.packageName);
+    serviceTypeController = TextEditingController(text: widget.serviceTypes);
     descriptionController = TextEditingController(text: widget.description);
     priceController = TextEditingController(text: widget.price);
 
@@ -339,7 +355,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     }
   }
 
-  Future<void> updateService() async {
+  Future<void> updatePackage() async {
     setState(() => isLoading = true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -352,12 +368,13 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     }
 
     var url = Uri.parse(
-      'http://192.168.1.9:8000/api/ServiceUpdate/${widget.serviceId}',
+      'http://192.168.1.9:8000/api/PackageUpdate/${widget.packageId}',
     );
     var request = http.MultipartRequest('POST', url);
 
     request.fields['user_id'] = userId.toString();
-    request.fields['service_name'] = nameController.text;
+    request.fields['name'] = nameController.text;
+    request.fields['service_types'] = serviceTypeController.text;
     request.fields['description'] = descriptionController.text;
     request.fields['price'] = priceController.text;
 
@@ -386,7 +403,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
       if (resData['status'] == true) {
         showFlushMessage("Success", resData['message'], Colors.green);
         await Future.delayed(const Duration(seconds: 2));
-        if (mounted) Navigator.pop(context, true); // ✅ return to previous page
+        if (mounted) Navigator.pop(context, true);
       } else {
         showFlushMessage("Failed", resData['message'], Colors.red);
       }
@@ -414,7 +431,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     final allImages = [
       ...imageList.map(
         (e) => Image.network(
-          "http://192.168.1.9:8000/service-image/$e",
+          "http://192.168.1.9:8000/package-image/$e",
           width: 70,
           height: 70,
           fit: BoxFit.cover,
@@ -442,7 +459,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Your Service'),
+        title: const Text('Edit Package'),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
@@ -469,7 +486,17 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  labelText: 'Service Name',
+                  labelText: 'Package Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: serviceTypeController,
+                decoration: InputDecoration(
+                  labelText: 'Service Types',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -515,7 +542,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: isLoading ? null : updateService,
+                  onPressed: isLoading ? null : updatePackage,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
                     foregroundColor: Colors.white,
@@ -537,5 +564,3 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     );
   }
 }
-
-
