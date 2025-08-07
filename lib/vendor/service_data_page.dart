@@ -20,7 +20,7 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
   Map<int, bool> expandedDescriptions = {};
 
   final TextEditingController _searchController = TextEditingController();
-  final String baseUrl = 'http://192.168.1.3:8000';
+  final String baseUrl = 'http://192.168.1.9:8000';
   final String imageRoute = 'service-image';
 
   @override
@@ -216,7 +216,7 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                     ),
                   ).then((value) {
                     if (value == true) {
-                      fetchServiceData(); 
+                      fetchServiceData();
                     }
                   });
                 },
@@ -360,7 +360,7 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                                             onPressed: () async {
                                               final response = await http.get(
                                                 Uri.parse(
-                                                  'http://192.168.1.3:8000/api/ServiceTrashDelete/${item['service_id']}',
+                                                  'http://192.168.1.9:8000/api/ServiceTrashDelete/${item['service_id']}',
                                                 ),
                                               );
 

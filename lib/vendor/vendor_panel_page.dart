@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/loginpage.dart';
 import 'VendorAvailabilityPage.dart';
 import '../vendor/service_data_page.dart';
+import '../vendor/PackageDataPage.dart';
 
 class VendorPanelPage extends StatefulWidget {
   const VendorPanelPage({super.key});
@@ -17,6 +18,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
   bool showAvailability = false;
   bool showServices = false;
   bool showTrash = false;
+  bool showPackages = false;
 
   @override
   void initState() {
@@ -142,6 +144,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                       setState(() {
                         showAvailability = true;
                         showServices = false;
+                        showPackages = false;
                       });
                     },
                   ),
@@ -152,11 +155,23 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                       setState(() {
                         showServices = true;
                         showAvailability = false;
-                        showTrash = true;
+                        showPackages = false;
                       });
                     },
                   ),
-                  serviceCard(icon: Icons.card_giftcard, title: 'Packages'),
+                  // serviceCard(icon: Icons.card_giftcard, title: 'Packages'),
+                  serviceCard(
+                    icon: Icons.card_giftcard,
+                    title: 'Packages',
+                    onTap: () {
+                      setState(() {
+                        showPackages = true;
+                        showServices = false;
+                        showAvailability = false;
+                      });
+                    },
+                  ),
+
                   serviceCard(icon: Icons.book_online, title: 'Bookings'),
                   serviceCard(icon: Icons.reviews, title: 'Reviews'),
                   serviceCard(icon: Icons.analytics, title: 'Reports'),
@@ -186,6 +201,18 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                   height: MediaQuery.of(context).size.height * 0.8,
                   width: double.infinity,
                   child: ServiceDataPage(),
+                ),
+              ),
+            if (showPackages)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  width: double.infinity,
+                  child: PackageDataPage(),
                 ),
               ),
           ],

@@ -42,7 +42,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          "http://192.168.1.3:8000/api/showCustomPackageData/${widget.packageId}",
+          "http://192.168.1.9:8000/api/showCustomPackageData/${widget.packageId}",
         ),
       );
 
@@ -88,7 +88,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.3:8000/api/checkdate"),
+        Uri.parse("http://192.168.1.9:8000/api/checkdate"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "vendor_id": vendorId,
@@ -297,7 +297,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                           try {
                             final response = await http.post(
                               Uri.parse(
-                                "http://192.168.1.3:8000/api/checkdate",
+                                "http://192.168.1.9:8000/api/checkdate",
                               ),
                               headers: {'Content-Type': 'application/json'},
                               body: jsonEncode({
@@ -406,7 +406,7 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
         itemCount: imageList.length,
         itemBuilder: (context, index) {
           final imageUrl =
-              "http://192.168.1.3:8000/$folder/${imageList[index].trim()}";
+              "http://192.168.1.9:8000/$folder/${imageList[index].trim()}";
           return GestureDetector(
             onTap: () {
               showDialog(
@@ -692,18 +692,6 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                       selectedPackages.add(data);
                     }
                   }
-
-                  // if (!allSelectedItemsHaveDates) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text(
-                  //         "Please select dates for all services and packages.",
-                  //       ),
-                  //       behavior: SnackBarBehavior.floating,
-                  //     ),
-                  //   );
-                  //   return;
-                  // }
 
                   if (!allSelectedItemsHaveDates) {
                     Flushbar(

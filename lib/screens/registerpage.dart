@@ -24,7 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> registerUser() async {
     setState(() => _isLoading = true);
 
-    final url = Uri.parse("http://192.168.1.3:8000/api/register");
+    final url = Uri.parse("http://192.168.1.9:8000/api/register");
 
     try {
       final response = await http.post(

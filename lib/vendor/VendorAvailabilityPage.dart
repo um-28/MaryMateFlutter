@@ -29,7 +29,7 @@ class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
     if (userId == null) return;
 
     final url = Uri.parse(
-      "http://192.168.1.3:8000/api/VendorAvailabilityView?user_id=$userId",
+      "http://192.168.1.9:8000/api/VendorAvailabilityView?user_id=$userId",
     );
 
     final response = await http.get(url);
@@ -381,7 +381,7 @@ class _EditAvailabilityPageState extends State<EditAvailabilityPage> {
     if (userId == null) return;
 
     final url = Uri.parse(
-      "http://192.168.1.3:8000/api/UpdateVendorAvailability",
+      "http://192.168.1.9:8000/api/UpdateVendorAvailability",
     );
 
     final response = await http.post(
