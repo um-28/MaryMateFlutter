@@ -273,7 +273,7 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                               dataRowMinHeight: 120,
                               dataRowMaxHeight: 120,
                               columnSpacing: 24,
-                              headingRowColor: MaterialStateProperty.all(
+                              headingRowColor: WidgetStateProperty.all(
                                 Colors.grey[200],
                               ),
                               columns: const [
@@ -333,7 +333,7 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                                                 ),
                                               ).then((value) {
                                                 if (value == true) {
-                                                  fetchServiceData(); // ✅ Reload updated table
+                                                  fetchServiceData(); //  Reload updated table
                                                 }
                                               });
                                             },
@@ -386,7 +386,9 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
                                                         Colors.green.shade600,
                                                     flushbarPosition:
                                                         FlushbarPosition.TOP,
+                                                        
                                                   ).show(context);
+                                                  
                                                   fetchServiceData(); // Reload list after trash
                                                 } else {
                                                   Flushbar(
