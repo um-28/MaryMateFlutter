@@ -28,7 +28,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
     fetchPackageData();
   }
 
-  Future<void> fetchPackageData() async {
+  Future<void> fetchPackageData({String search = ''}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? userId = prefs.getInt('user_id');
     if (userId == null) return;
@@ -37,7 +37,11 @@ class _PackageDataPageState extends State<PackageDataPage> {
       isLoading = true;
     });
 
-    final url = Uri.parse('$baseUrl/api/PackageData?user_id=$userId');
+    // final url = Uri.parse('$baseUrl/api/PackageData?user_id=$userId');
+
+    final url = Uri.parse(
+      '$baseUrl/api/PackageData?user_id=$userId&search=${Uri.encodeComponent(search)}',
+    );
 
     try {
       final response = await http.get(url);
@@ -62,31 +66,26 @@ class _PackageDataPageState extends State<PackageDataPage> {
     }
   }
 
-  void _filterPackages() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      filteredPackages =
-          packages.where((item) {
-            return item['package_name'].toString().toLowerCase().contains(
-                  query,
-                ) ||
-                item['service_types'].toString().toLowerCase().contains(query);
-          }).toList();
-    });
+  void _searchPackages() {
+    String query = _searchController.text.trim();
+    fetchPackageData(search: query);
   }
 
+  // void _resetSearchs() {
+  //   _searchController.clear();
+  //   fetchPackageData();
+  // }
+
   void _resetSearch() {
-    _searchController.clear();
-    setState(() {
-      filteredPackages = List.from(packages);
-    });
+    _searchController.clear(); // TextField clear
+    fetchPackageData(); // Sab data wapas load karega
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        /// Search Bar
+        // 🔍 Search Bar
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
           child: Row(
@@ -108,7 +107,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
                     controller: _searchController,
                     style: const TextStyle(fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: "Search packages...",
+                      hintText: "Package Name...",
                       hintStyle: const TextStyle(color: Colors.grey),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 14,
@@ -126,7 +125,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
               ),
               const SizedBox(width: 10),
               ElevatedButton(
-                onPressed: _filterPackages,
+                onPressed: _searchPackages,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
                   foregroundColor: Colors.white,
@@ -467,7 +466,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
                                       Text(item['service_types'] ?? 'N/A'),
                                     ),
                                     DataCell(
-                                      Column(
+                                    Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         mainAxisAlignment:
