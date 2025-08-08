@@ -6,6 +6,7 @@ import 'VendorAvailabilityPage.dart';
 import '../vendor/service_data_page.dart';
 import '../vendor/PackageDataPage.dart';
 import '../vendor/ReViewDataPage.dart';
+import '../vendor/ReportsDataPage.dart';
 
 class VendorPanelPage extends StatefulWidget {
   const VendorPanelPage({super.key});
@@ -25,6 +26,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
   bool showPackages = false;
   bool showBookings = false;
   bool showReviews = false;
+  bool showReports = false;
 
   @override
   void initState() {
@@ -154,6 +156,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                         showPackages = false;
                         showBookings = false;
                         showReviews = false;
+                        showReports = false;
                       });
                     },
                   ),
@@ -167,6 +170,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                         showPackages = false;
                         showBookings = false;
                         showReviews = false;
+                        showReports = false;
                       });
                     },
                   ),
@@ -180,6 +184,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                         showAvailability = false;
                         showBookings = false;
                         showReviews = false;
+                        showReports = false;
                       });
                     },
                   ),
@@ -193,6 +198,7 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                         showServices = false;
                         showAvailability = false;
                         showReviews = false;
+                        showReports = false;
                       });
                     },
                   ),
@@ -207,10 +213,26 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                         showServices = false;
                         showPackages = false;
                         showBookings = false;
+                        showReports = false;
+                        
                       });
                     },
                   ),
-                  serviceCard(icon: Icons.analytics, title: 'Reports'),
+                  // serviceCard(icon: Icons.analytics, title: 'Reports'),
+                  serviceCard(
+                    icon: Icons.analytics,
+                    title: 'Reports',
+                    onTap: () {
+                      setState(() {
+                        showReports = true;
+                        showReviews = false;
+                        showAvailability = false;
+                        showServices = false;
+                        showPackages = false;
+                        showBookings = false;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
@@ -275,6 +297,20 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                   height: MediaQuery.of(context).size.height * 0.8,
                   width: double.infinity,
                   child: ReviewDataPage(
+                    userId: userId!.toString(),
+                  ), // convert int to String here
+                ),
+              ),
+               if (showReports && userId != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  width: double.infinity,
+                  child: ReportsDataPage(
                     userId: userId!.toString(),
                   ), // convert int to String here
                 ),

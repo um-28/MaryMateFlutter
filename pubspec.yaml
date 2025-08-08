@@ -35,6 +35,10 @@ dependencies:
   js: ^0.6.7
   file_picker: ^6.1.1
   image_picker: ^1.0.4
+  url_launcher: ^6.1.7
+  intl: ^0.18.1
+  path_provider: ^2.0.15
+  open_file: ^3.2.1
   
 
   
