@@ -91,11 +91,11 @@ class _VendorPanelPageState extends State<VendorPanelPage> {
                   ),
                 ),
               ),
-              buildDrawerItem(
+             buildDrawerItem(
                 icon: Icons.person,
                 title: 'Manage Profile',
                 onTap: () {},
-              ),
+              ), 
               buildDrawerItem(
                 icon: Icons.logout,
                 title: 'Logout',
