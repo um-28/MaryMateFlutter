@@ -33,7 +33,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
     }
 
     final response = await http.get(
-      Uri.parse('http://192.168.1.9:8000/api/PackageTrash?user_id=$userId'),
+      Uri.parse('http://192.168.1.4:8000/api/PackageTrash?user_id=$userId'),
     );
 
     if (response.statusCode == 200) {
@@ -55,7 +55,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
 
   Future<void> restorePackage(String packageId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.9:8000/api/PackageRestore/$packageId'),
+      Uri.parse('http://192.168.1.4:8000/api/PackageRestore/$packageId'),
     );
 
     if (response.statusCode == 200) {
@@ -75,7 +75,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
 
   Future<void> forceDeletePackage(String packageId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.9:8000/api/PackageForceDelete/$packageId'),
+      Uri.parse('http://192.168.1.4:8000/api/PackageForceDelete/$packageId'),
     );
 
     if (response.statusCode == 200) {
@@ -250,7 +250,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
                                             itemCount: imageList.length,
                                             itemBuilder: (context, index) {
                                               final imageUrl =
-                                                  'http://192.168.1.9:8000/package-image/${imageList[index]}';
+                                                  'http://192.168.1.4:8000/package-image/${imageList[index]}';
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                   right: 8.0,

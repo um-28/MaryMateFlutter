@@ -63,7 +63,7 @@ class _ReviewDataPageState extends State<ReviewDataPage> {
 
   Future<void> fetchReviews() async {
     final url = Uri.parse(
-      'http://192.168.1.9:8000/api/ClientReviews?user_id=${widget.userId}',
+      'http://192.168.1.4:8000/api/ClientReviews?user_id=${widget.userId}',
     );
 
     print('Fetching reviews from: $url');

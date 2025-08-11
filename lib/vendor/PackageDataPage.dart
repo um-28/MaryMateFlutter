@@ -20,7 +20,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
   bool isLoading = true;
 
   final TextEditingController _searchController = TextEditingController();
-  final String baseUrl = 'http://192.168.1.9:8000';
+  final String baseUrl = 'http://192.168.1.4:8000';
 
   @override
   void initState() {
@@ -369,7 +369,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
                                             onPressed: () async {
                                               final response = await http.get(
                                                 Uri.parse(
-                                                  'http://192.168.1.9:8000/api/PackageTrahsDelete/${item['package_id']}',
+                                                  'http://192.168.1.4:8000/api/PackageTrahsDelete/${item['package_id']}',
                                                 ),
                                               );
 

@@ -58,7 +58,7 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
     }
 
     try {
-      var uri = Uri.parse('http://192.168.1.9:8000/api/ServiceStore');
+      var uri = Uri.parse('http://192.168.1.4:8000/api/ServiceStore');
       var request = http.MultipartRequest('POST', uri);
       request.fields['user_id'] = userId;
       request.fields['service_name'] = nameController.text;
@@ -352,7 +352,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     }
 
     var url = Uri.parse(
-      'http://192.168.1.9:8000/api/ServiceUpdate/${widget.serviceId}',
+      'http://192.168.1.4:8000/api/ServiceUpdate/${widget.serviceId}',
     );
     var request = http.MultipartRequest('POST', url);
 
@@ -414,7 +414,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     final allImages = [
       ...imageList.map(
         (e) => Image.network(
-          "http://192.168.1.9:8000/service-image/$e",
+          "http://192.168.1.4:8000/service-image/$e",
           width: 70,
           height: 70,
           fit: BoxFit.cover,

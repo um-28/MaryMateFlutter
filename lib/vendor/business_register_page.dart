@@ -65,7 +65,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
 
     setState(() => _isSubmitting = true);
 
-    var uri = Uri.parse("http://192.168.1.9:8000/api/VendorRegister");
+    var uri = Uri.parse("http://192.168.1.4:8000/api/VendorRegister");
     var request = http.MultipartRequest('POST', uri);
 
     request.fields['name'] = _nameController.text;

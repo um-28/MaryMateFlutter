@@ -33,7 +33,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
     }
 
     final response = await http.get(
-      Uri.parse('http://192.168.1.9:8000/api/ServiceTrash?user_id=$userId'),
+      Uri.parse('http://192.168.1.4:8000/api/ServiceTrash?user_id=$userId'),
     );
 
     if (response.statusCode == 200) {
@@ -55,7 +55,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
 
   Future<void> restoreService(String serviceId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.9:8000/api/ServiceRestore/$serviceId'),
+      Uri.parse('http://192.168.1.4:8000/api/ServiceRestore/$serviceId'),
     );
 
     if (response.statusCode == 200) {
@@ -86,7 +86,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
 
   Future<void> forceDeleteService(String serviceId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.9:8000/api/ServiceForceDelete/$serviceId'),
+      Uri.parse('http://192.168.1.5:8000/api/ServiceForceDelete/$serviceId'),
     );
 
     if (response.statusCode == 200) {
@@ -257,7 +257,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
                                             itemCount: imageList.length,
                                             itemBuilder: (context, index) {
                                               final imageUrl =
-                                                  'http://192.168.1.9:8000/service-image/${imageList[index]}';
+                                                  'http://192.168.1.4:8000/service-image/${imageList[index]}';
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                   right: 8.0,
