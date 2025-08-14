@@ -4,6 +4,7 @@ class Vendor {
   final String businessName;
   final String description;
   final int status;
+  final String? categoryImageUrl;
 
   Vendor({
     required this.vendorId,
@@ -11,6 +12,7 @@ class Vendor {
     required this.businessName,
     required this.description,
     required this.status,
+    this.categoryImageUrl,
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,17 @@ class Vendor {
       businessName: json['business_name'] ?? '',
       description: json['description'] ?? '',
       status: int.tryParse(json['status'].toString()) ?? 0,
+      categoryImageUrl: json['category_image_url'],
     );
   }
+
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'vendor_id': vendorId,
+  //     'business_name': businessName,
+  //     'description': description,
+  //     'status': status,
+  //     'category_image_url': categoryImageUrl,
+  //   };
+  // }
 }

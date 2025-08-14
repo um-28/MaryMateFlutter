@@ -1204,7 +1204,7 @@ class _BookingPageState extends State<BookingPage> {
                               ),
                               elevation: 4,
                             ),
-                            icon: const Icon(Icons.cancel),
+                            // icon: const Icon(Icons.cancel),
                             label: const Text(
                               "Cancel Booking",
                               style: TextStyle(fontSize: 16),
@@ -1218,8 +1218,8 @@ class _BookingPageState extends State<BookingPage> {
                                     bookingId.toString(),
                                     isCustom: isCustom,
                                   ),
-                              icon: const Icon(Icons.rate_review),
-                              label: const Text("Write Review"),
+                              // icon: const Icon(Icons.rate_review),
+                              label: const Text(" Review"),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 foregroundColor: Colors.white,

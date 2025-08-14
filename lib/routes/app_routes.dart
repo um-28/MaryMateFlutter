@@ -37,6 +37,9 @@ class AppRoutes {
   static const String businessRegister = 'business-register';
   static const String vendorPanel = '/vendorplanne';
 
+  static const String resetPassword = '/reset-password';
+
+
   static final routes = <String, WidgetBuilder>{
     splash: (context) => const SplashScreen(),
     welcome: (context) => const WelcomePage(),
