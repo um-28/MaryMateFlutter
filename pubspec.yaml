@@ -67,16 +67,16 @@ flutter:
   assets:
     - assets/images/marrymate.png
     # - assets/images/pandit.jpg
-    # - assets/images/mainback.jpg
-    # - assets/images/hall.jpg
-    # - assets/images/decor.jpg 
-    # - assets/images/catering.jpg
+    - assets/images/mainback.jpg
+    - assets/images/hall.jpg
+    - assets/images/decor.jpg 
+    - assets/images/catering.jpg
     # - assets/images/Dj.jpg
     # - assets/images/saloon.jpg
     # - assets/images/trasport.jpg
     - assets/images/google.png
     - assets/images/apple.png
-    - assets/images/custompackageimage.jpg
+    # - assets/images/custompackageimage.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

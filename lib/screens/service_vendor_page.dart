@@ -903,7 +903,7 @@ class ServiceVendorPage extends StatefulWidget {
   const ServiceVendorPage({
     super.key,
     required this.serviceName,
-    required this.headerImage,
+    required this.headerImage, required vendor,
   });
 
   @override
