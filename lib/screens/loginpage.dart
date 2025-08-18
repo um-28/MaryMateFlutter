@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() => _isLoading = true);
     }
 
-    final url = Uri.parse("http://192.168.1.4:8000/api/login");
+    final url = Uri.parse("http://192.168.1.6:8000/api/login");
 
     try {
       final response = await http.post(

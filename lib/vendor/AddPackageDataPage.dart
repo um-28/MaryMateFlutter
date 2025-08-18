@@ -58,7 +58,7 @@ class _AddPackageDataPageState extends State<AddPackageDataPage> {
     }
 
     try {
-      var uri = Uri.parse('http://192.168.1.4:8000/api/PackageStore');
+      var uri = Uri.parse('http://192.168.1.6:8000/api/PackageStore');
       var request = http.MultipartRequest('POST', uri);
       request.fields['user_id'] = userId;
       request.fields['name'] = nameController.text;
@@ -368,7 +368,7 @@ class _EditPackageDataPageState extends State<EditPackageDataPage> {
     }
 
     var url = Uri.parse(
-      'http://192.168.1.4:8000/api/PackageUpdate/${widget.packageId}',
+      'http://192.168.1.6:8000/api/PackageUpdate/${widget.packageId}',
     );
     var request = http.MultipartRequest('POST', url);
 
@@ -431,7 +431,7 @@ class _EditPackageDataPageState extends State<EditPackageDataPage> {
     final allImages = [
       ...imageList.map(
         (e) => Image.network(
-          "http://192.168.1.4:8000/package-image/$e",
+          "http://192.168.1.6:8000/package-image/$e",
           width: 70,
           height: 70,
           fit: BoxFit.cover,

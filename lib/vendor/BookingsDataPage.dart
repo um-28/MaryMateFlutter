@@ -31,7 +31,7 @@ class _BookingsDataPageState extends State<BookingsDataPage> {
 
   Future<void> fetchBookings() async {
     final url = Uri.parse(
-      'http://192.168.1.4:8000/api/BookingDetails?user_id=${widget.userId}',
+      'http://192.168.1.6:8000/api/BookingDetails?user_id=${widget.userId}',
     );
 
     try {

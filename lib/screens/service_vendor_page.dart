@@ -903,7 +903,8 @@ class ServiceVendorPage extends StatefulWidget {
   const ServiceVendorPage({
     super.key,
     required this.serviceName,
-    required this.headerImage, required vendor,
+    required this.headerImage,
+    required vendor,
   });
 
   @override
@@ -921,7 +922,7 @@ class _ServiceVendorPageState extends State<ServiceVendorPage> {
     try {
       final response = await http
           .get(
-            Uri.parse('http://192.168.1.4:8000/api/vendors/type/$businessType'),
+            Uri.parse('http://192.168.1.6:8000/api/vendors/type/$businessType'),
             headers: {'Accept': 'application/json'},
           )
           .timeout(const Duration(seconds: 10));

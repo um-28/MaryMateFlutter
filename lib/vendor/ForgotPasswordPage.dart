@@ -199,7 +199,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     });
 
     try {
-      var url = Uri.parse("http://192.168.1.4:8000/api/forgot-password");
+      var url = Uri.parse("http://192.168.1.6:8000/api/forgot-password");
       var response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},

@@ -26,7 +26,7 @@ class _AddAvailabilityPageState extends State<AddAvailabilityPage> {
 
     setState(() => isLoading = true);
 
-    final url = Uri.parse("http://192.168.1.4:8000/api/VendorAvailability");
+    final url = Uri.parse("http://192.168.1.6:8000/api/VendorAvailability");
 
     final response = await http.post(
       url,

@@ -89,7 +89,7 @@ class _GenerateDataPageState extends State<GenerateDataPage> {
     };
 
     final uri = Uri.http(
-      '192.168.1.4:8000',
+      '192.168.1.6:8000',
       '/api/ClientsBookingReports',
       queryParameters,
     );

@@ -836,7 +836,7 @@ class _BookingPageState extends State<BookingPage> {
     }
 
     final url = Uri.parse(
-      'http://192.168.1.4:8000/api/Orderhistory?user_id=$userId',
+      'http://192.168.1.6:8000/api/Orderhistory?user_id=$userId',
     );
 
     try {
@@ -916,8 +916,8 @@ class _BookingPageState extends State<BookingPage> {
 
     final url = Uri.parse(
       isCustom
-          ? "http://192.168.1.4:8000/api/CustomBookingReview/$bookingId"
-          : "http://192.168.1.4:8000/api/BookingReview/$bookingId",
+          ? "http://192.168.1.6:8000/api/CustomBookingReview/$bookingId"
+          : "http://192.168.1.6:8000/api/BookingReview/$bookingId",
     );
 
     try {
@@ -954,7 +954,7 @@ class _BookingPageState extends State<BookingPage> {
             ? "check-customcancel-eligibility"
             : "check-regularcancel-eligibility";
 
-    final url = Uri.parse("http://192.168.1.4:8000/api/$endpoint/$bookingId");
+    final url = Uri.parse("http://192.168.1.6:8000/api/$endpoint/$bookingId");
 
     try {
       final response = await http.get(url);

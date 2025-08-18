@@ -39,7 +39,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => isLoading = true);
 
-    final url = Uri.parse('http://192.168.1.4:8000/api/update-profile');
+    final url = Uri.parse('http://192.168.1.6:8000/api/update-profile');
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final token = prefs.getString('auth_token');

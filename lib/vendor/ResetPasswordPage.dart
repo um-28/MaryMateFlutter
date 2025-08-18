@@ -345,7 +345,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       isLoading = true;
     });
 
-    var url = Uri.parse("http://192.168.1.4:8000/api/reset-password");
+    var url = Uri.parse("http://192.168.1.6:8000/api/reset-password");
 
     try {
       var response = await http.post(
