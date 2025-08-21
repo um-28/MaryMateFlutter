@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
 import '../vendor/AddServiceDatePage.dart';
 import '../vendor/TrashDataPage.dart';
+import '../config/api_config.dart';
 // import '../vendor/EditServiceDataPage.dart';
 
 class ServiceDataPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class _ServiceDataPageState extends State<ServiceDataPage> {
   Map<int, bool> expandedDescriptions = {};
 
   final TextEditingController _searchController = TextEditingController();
-  final String baseUrl = 'http://192.168.1.6:8000';
+  final String baseUrl = '${ApiConfig.baseUrl}/';
   final String imageRoute = 'service-image';
 
   @override

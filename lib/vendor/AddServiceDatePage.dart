@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:another_flushbar/flushbar.dart';
+import '../config/api_config.dart';
 // import 'package:image_picker/image_picker.dart';
 
 class AddServiceDataPage extends StatefulWidget {
@@ -58,7 +59,7 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
     }
 
     try {
-      var uri = Uri.parse('http://192.168.1.6:8000/api/ServiceStore');
+      var uri = Uri.parse('${ApiConfig.baseUrl}/api/ServiceStore');
       var request = http.MultipartRequest('POST', uri);
       request.fields['user_id'] = userId;
       request.fields['service_name'] = nameController.text;
@@ -274,7 +275,6 @@ class _AddServiceDataPageState extends State<AddServiceDataPage> {
   }
 }
 
-
 class EditServiceDataPage extends StatefulWidget {
   final String serviceId;
   final String serviceName;
@@ -352,7 +352,7 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     }
 
     var url = Uri.parse(
-      'http://192.168.1.6:8000/api/ServiceUpdate/${widget.serviceId}',
+      '${ApiConfig.baseUrl}/api/ServiceUpdate/${widget.serviceId}',
     );
     var request = http.MultipartRequest('POST', url);
 
@@ -537,5 +537,3 @@ class _EditServiceDataPageState extends State<EditServiceDataPage> {
     );
   }
 }
-
-

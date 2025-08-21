@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../config/api_config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -63,7 +64,7 @@ class _ReviewDataPageState extends State<ReviewDataPage> {
 
   Future<void> fetchReviews() async {
     final url = Uri.parse(
-      'http://192.168.1.6:8000/api/ClientReviews?user_id=${widget.userId}',
+      '${ApiConfig.baseUrl}/api/ClientReviews?user_id=${widget.userId}',
     );
 
     print('Fetching reviews from: $url');

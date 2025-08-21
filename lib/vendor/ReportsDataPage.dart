@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 
 import '../vendor/GenerateDataPage.dart'; // Import the new page
@@ -53,39 +50,40 @@ class ReportsDataPage extends StatelessWidget {
                     DataColumn(label: Text('Title')),
                     DataColumn(label: Text('Action')),
                   ],
-                  rows: reports.map((report) {
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(report['title'])),
-                        DataCell(
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => GenerateDataPage(
-                                    userId: userId,
+                  rows:
+                      reports.map((report) {
+                        return DataRow(
+                          cells: [
+                            DataCell(Text(report['title'])),
+                            DataCell(
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                              );
-                            },
-                            child: const Text('View'),
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) =>
+                                              GenerateDataPage(userId: userId),
+                                    ),
+                                  );
+                                },
+                                child: const Text('View'),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
                 ),
               ),
             ),

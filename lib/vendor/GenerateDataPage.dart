@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
 import 'dart:ui' as ui;
+import '../config/api_config.dart';
 
 import 'dart:html' as html; // for web iframe
 
@@ -89,8 +90,8 @@ class _GenerateDataPageState extends State<GenerateDataPage> {
     };
 
     final uri = Uri.http(
-      '192.168.1.6:8000',
-      '/api/ClientsBookingReports',
+      '${ApiConfig.baseUrl}/api',
+      '/ClientsBookingReports',
       queryParameters,
     );
 

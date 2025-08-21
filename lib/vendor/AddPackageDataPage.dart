@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:another_flushbar/flushbar.dart';
+import '../config/api_config.dart';
 
 class AddPackageDataPage extends StatefulWidget {
   const AddPackageDataPage({super.key});
@@ -58,7 +59,7 @@ class _AddPackageDataPageState extends State<AddPackageDataPage> {
     }
 
     try {
-      var uri = Uri.parse('http://192.168.1.6:8000/api/PackageStore');
+      var uri = Uri.parse('${ApiConfig.baseUrl}/api/PackageStore');
       var request = http.MultipartRequest('POST', uri);
       request.fields['user_id'] = userId;
       request.fields['name'] = nameController.text;
@@ -368,7 +369,7 @@ class _EditPackageDataPageState extends State<EditPackageDataPage> {
     }
 
     var url = Uri.parse(
-      'http://192.168.1.6:8000/api/PackageUpdate/${widget.packageId}',
+      '${ApiConfig.baseUrl}/api/PackageUpdate/${widget.packageId}',
     );
     var request = http.MultipartRequest('POST', url);
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../config/api_config.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -39,7 +40,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => isLoading = true);
 
-    final url = Uri.parse('http://192.168.1.6:8000/api/update-profile');
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/update-profile');
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final token = prefs.getString('auth_token');

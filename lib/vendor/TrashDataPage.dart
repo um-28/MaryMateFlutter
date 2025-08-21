@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:another_flushbar/flushbar.dart';
+import '../config/api_config.dart';
 
 class TrashDataPage extends StatefulWidget {
   const TrashDataPage({super.key});
@@ -33,7 +34,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
     }
 
     final response = await http.get(
-      Uri.parse('http://192.168.1.6:8000/api/ServiceTrash?user_id=$userId'),
+      Uri.parse('${ApiConfig.baseUrl}/api/ServiceTrash?user_id=$userId'),
     );
 
     if (response.statusCode == 200) {
@@ -55,7 +56,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
 
   Future<void> restoreService(String serviceId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.6:8000/api/ServiceRestore/$serviceId'),
+      Uri.parse('${ApiConfig.baseUrl}/api/ServiceRestore/$serviceId'),
     );
 
     if (response.statusCode == 200) {
@@ -86,7 +87,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
 
   Future<void> forceDeleteService(String serviceId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.6:8000/api/ServiceForceDelete/$serviceId'),
+      Uri.parse('${ApiConfig.baseUrl}/api/ServiceForceDelete/$serviceId'),
     );
 
     if (response.statusCode == 200) {
@@ -257,7 +258,7 @@ class _TrashDataPageState extends State<TrashDataPage> {
                                             itemCount: imageList.length,
                                             itemBuilder: (context, index) {
                                               final imageUrl =
-                                                  'http://192.168.1.6:8000/service-image/${imageList[index]}';
+                                                  '${ApiConfig.baseUrl}/service-image/${imageList[index]}';
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                   right: 8.0,

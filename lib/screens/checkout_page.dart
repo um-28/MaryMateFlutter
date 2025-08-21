@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import '../config/api_config.dart';
 
 class CheckoutPage extends StatefulWidget {
   final double totalPrice;
@@ -131,7 +132,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.6:8000/api/custompackagebooking"),
+        Uri.parse("${ApiConfig.baseUrl}/api/custompackagebooking"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(data),
       );
@@ -143,7 +144,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           context,
         ).showSnackBar(const SnackBar(content: Text("Booking Successful!")));
       } else {
-         // ignore: use_build_context_synchronously
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Booking failed: ${res['message']}")),
         );

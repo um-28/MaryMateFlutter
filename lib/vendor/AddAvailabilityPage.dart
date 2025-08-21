@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/api_config.dart';
 
 class AddAvailabilityPage extends StatefulWidget {
   const AddAvailabilityPage({super.key});
@@ -26,7 +26,7 @@ class _AddAvailabilityPageState extends State<AddAvailabilityPage> {
 
     setState(() => isLoading = true);
 
-    final url = Uri.parse("http://192.168.1.6:8000/api/VendorAvailability");
+    final url = Uri.parse("${ApiConfig.baseUrl}/api/VendorAvailability");
 
     final response = await http.post(
       url,

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../screens/wedding_service_model.dart';
+import '../config/api_config.dart';
 
 class WeddingServiceApi {
-  static const String baseUrl = 'http://192.168.1.6:8000/api/services';
+  static const String baseUrl = '${ApiConfig.baseUrl}/api/services';
 
   static Future<List<WeddingService>> fetchWeddingHalls() async {
     final response = await http.get(Uri.parse('$baseUrl/wedding-halls'));

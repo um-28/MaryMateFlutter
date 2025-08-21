@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:another_flushbar/flushbar.dart';
+import '../config/api_config.dart';
 
 class PackageTrashDataPage extends StatefulWidget {
   const PackageTrashDataPage({super.key});
@@ -33,7 +34,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
     }
 
     final response = await http.get(
-      Uri.parse('http://192.168.1.6:8000/api/PackageTrash?user_id=$userId'),
+      Uri.parse('${ApiConfig.baseUrl}/api/PackageTrash?user_id=$userId'),
     );
 
     if (response.statusCode == 200) {
@@ -55,7 +56,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
 
   Future<void> restorePackage(String packageId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.6:8000/api/PackageRestore/$packageId'),
+      Uri.parse('${ApiConfig.baseUrl}/api/PackageRestore/$packageId'),
     );
 
     if (response.statusCode == 200) {
@@ -75,7 +76,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
 
   Future<void> forceDeletePackage(String packageId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.6:8000/api/PackageForceDelete/$packageId'),
+      Uri.parse('${ApiConfig.baseUrl}/api/PackageForceDelete/$packageId'),
     );
 
     if (response.statusCode == 200) {
@@ -250,7 +251,7 @@ class _PackageTrashDataPageState extends State<PackageTrashDataPage> {
                                             itemCount: imageList.length,
                                             itemBuilder: (context, index) {
                                               final imageUrl =
-                                                  'http://192.168.1.6:8000/package-image/${imageList[index]}';
+                                                  'http://192.168.1.10:8000/package-image/${imageList[index]}';
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                   right: 8.0,

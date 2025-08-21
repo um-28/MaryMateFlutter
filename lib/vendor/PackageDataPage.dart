@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
 import '../vendor/AddPackageDataPage.dart';
 import '../vendor/PackageTrashDataPage.dart';
+import '../config/api_config.dart';
 
 class PackageDataPage extends StatefulWidget {
   const PackageDataPage({super.key});
@@ -20,7 +21,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
   bool isLoading = true;
 
   final TextEditingController _searchController = TextEditingController();
-  final String baseUrl = 'http://192.168.1.6:8000';
+  final String baseUrl = '${ApiConfig.baseUrl}/';
 
   @override
   void initState() {
@@ -369,7 +370,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
                                             onPressed: () async {
                                               final response = await http.get(
                                                 Uri.parse(
-                                                  'http://192.168.1.6:8000/api/PackageTrahsDelete/${item['package_id']}',
+                                                  '${ApiConfig.baseUrl}/api/PackageTrahsDelete/${item['package_id']}',
                                                 ),
                                               );
 
@@ -466,7 +467,7 @@ class _PackageDataPageState extends State<PackageDataPage> {
                                       Text(item['service_types'] ?? 'N/A'),
                                     ),
                                     DataCell(
-                                    Column(
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         mainAxisAlignment:

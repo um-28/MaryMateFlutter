@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../routes/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../vendor/ForgotPasswordPage.dart';
+import '../config/api_config.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() => _isLoading = true);
     }
 
-    final url = Uri.parse("http://192.168.1.6:8000/api/login");
+    final url = Uri.parse("${ApiConfig.baseUrl}/api/login");
 
     try {
       final response = await http.post(

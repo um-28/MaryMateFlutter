@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:another_flushbar/flushbar.dart';
 import '../vendor/AddAvailabilityPage.dart';
+import '../config/api_config.dart';
 
 class VendorAvailabilityPage extends StatefulWidget {
   const VendorAvailabilityPage({super.key});
@@ -29,7 +29,7 @@ class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
     if (userId == null) return;
 
     final url = Uri.parse(
-      "http://192.168.1.6:8000/api/VendorAvailabilityView?user_id=$userId",
+      "${ApiConfig.baseUrl}/api/VendorAvailabilityView?user_id=$userId",
     );
 
     final response = await http.get(url);
@@ -55,7 +55,7 @@ class _VendorAvailabilityPageState extends State<VendorAvailabilityPage> {
     if (userId == null) return;
 
     final url = Uri.parse(
-      "http://192.168.1.6:8000/api/VendorAvailability/status?user_id=$userId",
+      "${ApiConfig.baseUrl}/api/VendorAvailability/status?user_id=$userId",
     );
 
     final response = await http.get(url);
@@ -380,9 +380,7 @@ class _EditAvailabilityPageState extends State<EditAvailabilityPage> {
     int? userId = prefs.getInt('user_id');
     if (userId == null) return;
 
-    final url = Uri.parse(
-      "http://192.168.1.6:8000/api/UpdateVendorAvailability",
-    );
+    final url = Uri.parse("${ApiConfig.baseUrl}/api/UpdateVendorAvailability");
 
     final response = await http.post(
       url,

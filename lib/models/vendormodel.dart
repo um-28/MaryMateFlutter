@@ -5,6 +5,7 @@ class Vendor {
   final String description;
   final int status;
   final String? categoryImageUrl;
+  final double? rating;
 
   Vendor({
     required this.vendorId,
@@ -13,6 +14,7 @@ class Vendor {
     required this.description,
     required this.status,
     this.categoryImageUrl,
+    this.rating,
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,10 @@ class Vendor {
       description: json['description'] ?? '',
       status: int.tryParse(json['status'].toString()) ?? 0,
       categoryImageUrl: json['category_image_url'],
+      rating:
+          json['reviews_avg_rating'] != null
+              ? double.tryParse(json['reviews_avg_rating'].toString())
+              : null,
     );
   }
 

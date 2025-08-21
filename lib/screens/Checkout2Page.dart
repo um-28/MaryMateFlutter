@@ -5,6 +5,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:another_flushbar/flushbar.dart';
 import '../screens/bookingpage.dart';
 import '../data/cart_data.dart';
+import '../config/api_config.dart';
 
 class Checkout2Page extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
@@ -124,7 +125,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.6:8000/api/regularbooking"),
+        Uri.parse("${ApiConfig.baseUrl}/api/regularbooking"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(fullData),
       );
@@ -138,18 +139,17 @@ class _Checkout2PageState extends State<Checkout2Page> {
           borderRadius: BorderRadius.circular(8),
           margin: const EdgeInsets.all(12),
           icon: const Icon(Icons.check_circle, color: Colors.white),
-           // ignore: use_build_context_synchronously
+          // ignore: use_build_context_synchronously
         ).show(context);
 
         // Clear the cart from memory and SharedPreferences
         globalCartItems.clear();
         await saveCartToPrefs();
 
-
         await Future.delayed(const Duration(seconds: 2));
 
         Navigator.pushReplacement(
-           // ignore: use_build_context_synchronously
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (_) => const BookingPage()),
         );
@@ -169,14 +169,14 @@ class _Checkout2PageState extends State<Checkout2Page> {
       } else {
         print(" Booking failed: ${response.body}");
         ScaffoldMessenger.of(
-           // ignore: use_build_context_synchronously
+          // ignore: use_build_context_synchronously
           context,
         ).showSnackBar(const SnackBar(content: Text(" Booking failed")));
       }
     } catch (e) {
       print(" Error submitting booking: $e");
       ScaffoldMessenger.of(
-         // ignore: use_build_context_synchronously
+        // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(const SnackBar(content: Text(" Something went wrong")));
     } finally {
