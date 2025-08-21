@@ -1356,11 +1356,16 @@ class _HomePageState extends State<HomePage> {
             final businessName = vendor['business_name'] ?? 'No Name';
             final businessType = vendor['business_type'] ?? 'Service';
 
+            // final imageUrl =
+            //     (vendor['image'] != null)
+            //         ? vendor['image'] as String
+            //         : "assets/images/custompackageimage.jpg";
+
             final imageUrl =
                 (vendor['image'] != null &&
-                        vendor['image'] is String &&
-                        vendor['image'].isNotEmpty)
-                    ? vendor['image'] as String
+                        vendor['image'].toString().isNotEmpty)
+                    ? vendor['image']
+                        as String // URL from Laravel API (/api/image/xyz)
                     : "assets/images/custompackageimage.jpg";
 
             return _buildCard(
