@@ -5,14 +5,16 @@ import 'profilepage.dart';
 import 'add_cart_page.dart';
 
 class BottomNavPage extends StatefulWidget {
-  const BottomNavPage({super.key});
+  final int initialIndex; // Tab to open initially
+
+  const BottomNavPage({super.key, this.initialIndex = 0});
 
   @override
   State<BottomNavPage> createState() => _BottomNavPageState();
 }
 
 class _BottomNavPageState extends State<BottomNavPage> {
-  int _currentIndex = 0;
+  late int _currentIndex;
 
   final List<IconData> _icons = [
     Icons.home_rounded,
@@ -24,8 +26,14 @@ class _BottomNavPageState extends State<BottomNavPage> {
   final List<String> _labels = ["Home", "Booking", "Cart", "Profile"];
 
   @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex; // Set initial tab
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // AddCartPage gets a UniqueKey to rebuild when tab is selected
+    // Pages for each tab
     final List<Widget> pages = [
       const HomePage(),
       const BookingPage(),

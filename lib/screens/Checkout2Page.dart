@@ -3,9 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:another_flushbar/flushbar.dart';
-import '../screens/bookingpage.dart';
+// import '../screens/bookingpage.dart';
 import '../data/cart_data.dart';
 import '../config/api_config.dart';
+import '../screens/bottomnavpage.dart';
 
 class Checkout2Page extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
@@ -121,7 +122,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
       "event_date_end": endDates.join(","),
     };
 
-    print("📦 Sending to backend: $fullData");
+    print(" Sending to backend: $fullData");
 
     try {
       final response = await http.post(
@@ -132,7 +133,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
 
       if (response.statusCode == 200) {
         Flushbar(
-          message: "🎉 Congratulations! Your booking is confirmed",
+          message: " Congratulations! Your booking is confirmed",
           backgroundColor: Colors.green.shade600,
           duration: const Duration(seconds: 2),
           flushbarPosition: FlushbarPosition.TOP,
@@ -148,24 +149,14 @@ class _Checkout2PageState extends State<Checkout2Page> {
 
         await Future.delayed(const Duration(seconds: 2));
 
-        Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(builder: (_) => const BookingPage()),
-        );
 
-        ///  RELOAD Checkout2Page after success
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder:
-        //         (context) => Checkout2Page(
-        //           cartItems: widget.cartItems,
-        //           totalPrice: widget.totalPrice,
-        //           userId: widget.userId,
-        //         ),
-        //   ),
-        // );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (_) => const BottomNavPage(initialIndex: 1), // 1 = Bookings tab
+          ),
+        );
       } else {
         print(" Booking failed: ${response.body}");
         ScaffoldMessenger.of(
