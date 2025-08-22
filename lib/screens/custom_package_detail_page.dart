@@ -6,15 +6,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/checkout_page.dart';
 import '../screens/loginpage.dart';
 import '../config/api_config.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // your StatefulWidget class
 class CustomPackageDetailPage extends StatefulWidget {
   final int packageId;
+  final String packageName;
+  final String headerImage;
 
   const CustomPackageDetailPage({
     super.key,
     required this.packageId,
     required packageData,
+    required this.packageName,
+    required this.headerImage,
   });
 
   @override
@@ -519,73 +524,116 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
     );
   }
 
+  Widget _buildHeader() {
+    Color headerColor =
+        (isLoading) ? Colors.grey.shade300 : Colors.deepOrange.shade400;
+
+    return Stack(
+      children: [
+        Container(height: 80, decoration: BoxDecoration(color: headerColor)),
+        Positioned(
+          top: 18,
+          left: 12,
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            iconSize: 30,
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        Positioned(
+          left: 60,
+          bottom: 22,
+          child: Text(
+            widget.packageName,
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Custom Package Details")),
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          _buildHeader(),
 
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : customPackage == null
-              ? const Center(child: Text("No data found"))
-              : SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Package Name: ${customPackage!['package_name']}",
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text("Description: ${customPackage!['description']}"),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Text(
-                        "Total Cost: ₹${customPackage!['totalcost']}",
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Included Services",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ...services.map(
-                      (s) => buildServiceOrPackageCard(s, 'service-image'),
-                    ),
-                    const Divider(height: 30),
+          // ✅ scrollable part Expanded me wrap kiya
+          Expanded(
+            child:
+                isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : customPackage == null
+                    ? const Center(child: Text("No data found"))
+                    : SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Package Name: ${customPackage!['package_name']}",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text("Description: ${customPackage!['description']}"),
+                          const SizedBox(height: 20),
+                          Center(
+                            child: Text(
+                              "Total Cost: ₹${customPackage!['totalcost']}",
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
+                            "Included Services",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ...services.map(
+                            (s) =>
+                                buildServiceOrPackageCard(s, 'service-image'),
+                          ),
+                          const Divider(height: 30),
 
-                    if (predefinedPackages.isNotEmpty) ...[
-                      const Text(
-                        "Predefined Packages",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                          if (predefinedPackages.isNotEmpty) ...[
+                            const Text(
+                              "Predefined Packages",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ...predefinedPackages.map(
+                              (p) =>
+                                  buildServiceOrPackageCard(p, 'package-image'),
+                            ),
+                            const SizedBox(height: 100),
+                          ],
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      ...predefinedPackages.map(
-                        (p) => buildServiceOrPackageCard(p, 'package-image'),
-                      ),
-                      const SizedBox(height: 100), // Extra space for bottom bar
-                    ],
-                  ],
-                ),
-              ),
+                    ),
+          ),
+        ],
+      ),
 
+      // ✅ bottomNavigationBar same
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: const BoxDecoration(
@@ -733,8 +781,6 @@ class _CustomPackageDetailPageState extends State<CustomPackageDetailPage> {
                     ),
                   );
                 },
-
-                // icon: const Icon(Icons.shopping_cart_checkout, size: 18),
                 label: const Text(
                   "Book Now",
                   style: TextStyle(fontSize: 15, color: Colors.white),

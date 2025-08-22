@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:another_flushbar/flushbar.dart';
-// import '../screens/bookingpage.dart';
 import '../data/cart_data.dart';
 import '../config/api_config.dart';
 import '../screens/bottomnavpage.dart';
@@ -30,9 +29,9 @@ class _Checkout2PageState extends State<Checkout2Page> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
+
   late Razorpay _razorpay;
   bool isLoading = false;
-  bool showBookingSummary = false;
 
   @override
   void initState() {
@@ -66,12 +65,13 @@ class _Checkout2PageState extends State<Checkout2Page> {
     var options = {
       'key': 'rzp_test_gwALiTsenyZSKW',
       'amount': (widget.totalPrice * 100).toInt(),
-      'name': 'CareMitra',
+      'name': 'MarryMate',
       'description': 'Service Booking',
       'prefill': {
         'contact': phoneController.text,
         'email': emailController.text,
       },
+      'currency': 'INR',
     };
 
     try {
@@ -140,34 +140,29 @@ class _Checkout2PageState extends State<Checkout2Page> {
           borderRadius: BorderRadius.circular(8),
           margin: const EdgeInsets.all(12),
           icon: const Icon(Icons.check_circle, color: Colors.white),
-          // ignore: use_build_context_synchronously
         ).show(context);
 
-        // Clear the cart from memory and SharedPreferences
+        // Clear cart
         globalCartItems.clear();
         await saveCartToPrefs();
 
         await Future.delayed(const Duration(seconds: 2));
 
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder:
-                (_) => const BottomNavPage(initialIndex: 1), // 1 = Bookings tab
+            builder: (_) => const BottomNavPage(initialIndex: 1),
           ),
         );
       } else {
         print(" Booking failed: ${response.body}");
         ScaffoldMessenger.of(
-          // ignore: use_build_context_synchronously
           context,
         ).showSnackBar(const SnackBar(content: Text(" Booking failed")));
       }
     } catch (e) {
       print(" Error submitting booking: $e");
       ScaffoldMessenger.of(
-        // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(const SnackBar(content: Text(" Something went wrong")));
     } finally {
@@ -178,9 +173,10 @@ class _Checkout2PageState extends State<Checkout2Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // ✅ Full white background
       appBar: AppBar(
         title: const Text("Checkout"),
-        backgroundColor: Colors.deepOrangeAccent,
+        backgroundColor: Colors.deepOrange,
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -230,6 +226,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
                                     ? "Please enter your name"
                                     : null,
                       ),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: emailController,
                         decoration: const InputDecoration(labelText: "Email"),
@@ -239,6 +236,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
                                     ? "Please enter your email"
                                     : null,
                       ),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: phoneController,
                         decoration: const InputDecoration(
@@ -251,6 +249,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
                                     ? "Please enter phone number"
                                     : null,
                       ),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: addressController,
                         decoration: const InputDecoration(labelText: "Address"),
@@ -262,7 +261,7 @@ class _Checkout2PageState extends State<Checkout2Page> {
                       ElevatedButton(
                         onPressed: isLoading ? null : _startPayment,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepOrangeAccent,
+                          backgroundColor: Colors.deepOrange,
                           minimumSize: const Size.fromHeight(50),
                         ),
                         child:
